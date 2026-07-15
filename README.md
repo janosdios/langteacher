@@ -2,6 +2,12 @@
 
 [![License: PolyForm Noncommercial 1.0.0](https://img.shields.io/badge/License-PolyForm%20Noncommercial%201.0.0-blue.svg)](LICENSE)
 [![Platforms: macOS | Windows | Linux | Raspberry Pi 5+](https://img.shields.io/badge/Platforms-macOS%20%7C%20Windows%20%7C%20Linux%20%7C%20Raspberry%20Pi%205%2B-lightgrey.svg)](#requirements)
+[![Release](https://img.shields.io/github/v/release/janosdios/langteacher?include_prereleases)](https://github.com/janosdios/langteacher/releases)
+
+> **⚠️ Early / pre-release:** developed and tested on macOS so far. Windows,
+> Linux, and Raspberry Pi support is implemented but not yet verified —
+> expect rough edges until testing catches up. Bug reports via
+> [Issues](https://github.com/janosdios/langteacher/issues) are welcome.
 
 A voice-based language tutor that runs entirely on your own hardware. Talk
 to it out loud in the language you're learning, it listens, thinks, and
