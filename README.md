@@ -1,5 +1,4 @@
 # LangTeacher
----
 
 A voice-based language tutor that runs entirely on your own hardware. Talk
 to it out loud in the language you're learning, it listens, thinks, and
@@ -14,7 +13,6 @@ cloning/design) or, on lighter hardware like a Raspberry Pi, [Piper](https://git
 keys, no per-message cost.
 
 ## Features
----
 
 - **Spoken conversation** — push-to-talk or hands-free (voice-activity
   detection) input, streamed spoken replies.
@@ -53,7 +51,6 @@ keys, no per-message cost.
 - **Supported platforms** - macOS, Windows, Linux, Raspberry Pi 5+
 
 ## Architecture
----
 
 | Module | Responsibility |
 |---|---|
@@ -70,7 +67,6 @@ Each engine module also works standalone for testing, e.g.
 — run any of them with `--help` for its own flags.
 
 ## Requirements
----
 
 - Python 3.10+
 - A running [llama.cpp](https://github.com/ggml-org/llama.cpp) server
@@ -87,7 +83,6 @@ Each engine module also works standalone for testing, e.g.
   `brew install espeak-ng` on macOS.
 
 ## Setup
----
 
 Create an isolated Python environment for LangTeacher via
 [Miniconda](https://www.anaconda.com/docs/getting-started/miniconda/install)
@@ -256,7 +251,6 @@ Note: the student's native language (used for code-switching help) has no flag h
 it's only settable via the `NATIVE_LANGUAGE` env var, or `main.py`'s interactive picker.
 
 ## Project layout
----
 
 ```
 books/           Your own course PDFs for RAG ingestion
@@ -270,7 +264,6 @@ locale/          CLI translation catalogs, see locale/LOCALIZATION.md to edit/ad
 ```
 
 ## License
----
 
 [PolyForm Noncommercial License 1.0.0](LICENSE) — free for noncommercial
 use; see the license file for the full terms.
