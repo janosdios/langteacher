@@ -1,5 +1,7 @@
 # LangTeacher
 
+[![License: PolyForm Noncommercial 1.0.0](https://img.shields.io/badge/License-PolyForm%20Noncommercial%201.0.0-blue.svg)](LICENSE)
+
 A voice-based language tutor that runs entirely on your own hardware. Talk
 to it out loud in the language you're learning, it listens, thinks, and
 talks back in a cloned or generated voice — corrections, native-language
@@ -178,7 +180,6 @@ default `127.0.0.1:8081`). Set `RAG_ENABLED=false` to run without it — the
 tutor works fine with no knowledge base, it just skips retrieved context.
 
 ## Configuration
----
 
 `main.py` is the app you actually run; `stt_engine.py`, `tts_engine.py`, and
 `llm_engine.py` also work standalone (each has its own, more granular set of flags, handy
