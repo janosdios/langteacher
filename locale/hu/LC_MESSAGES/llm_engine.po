@@ -1,0 +1,120 @@
+# Hungarian translations for llm_engine CLI strings.
+msgid ""
+msgstr ""
+"Project-Id-Version: llm_engine\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2026-07-14 17:47+0200\n"
+"PO-Revision-Date: 2026-07-14 17:38+0200\n"
+"Last-Translator: \n"
+"Language-Team: Hungarian\n"
+"Language: hu\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+
+#: llm_engine.py:378
+msgid "Usage: --ui-lang <language-code>"
+msgstr "Használat: --ui-lang <nyelvkód>"
+
+#: llm_engine.py:381
+msgid "LLM Engine - llama.cpp tutor client"
+msgstr "LLM motor - llama.cpp tanár kliens"
+
+#: llm_engine.py:382
+msgid ""
+"\n"
+"Usage: python3 llm_engine.py [--host <ip-or-hostname>] [--port <port>] [--"
+"lang-target <language>] [--level <cefr-level>] [--ui-lang <language-code>]"
+msgstr ""
+"\n"
+"Használat: python3 llm_engine.py [--host <ip-cím-vagy-hosztnév>] [--port "
+"<port>] [--lang-target <nyelv>] [--level <cefr-szint>] [--ui-lang <nyelvkód>]"
+
+#: llm_engine.py:383
+msgid ""
+"  --host          llama.cpp server host (default: env LLAMACPP_HOST or "
+"127.0.0.1)"
+msgstr ""
+"  --host          llama.cpp szerver hosztja (alapértelmezett: LLAMACPP_HOST "
+"környezeti változó vagy 127.0.0.1)"
+
+#: llm_engine.py:384
+msgid ""
+"  --port          llama.cpp server port (default: env LLAMACPP_PORT or 8080)"
+msgstr ""
+"  --port          llama.cpp szerver portja (alapértelmezett: LLAMACPP_PORT "
+"környezeti változó vagy 8080)"
+
+#: llm_engine.py:385
+msgid ""
+"  --lang-target   Target language the tutor teaches (default: env "
+"TARGET_LANGUAGE or German). Also"
+msgstr ""
+"  --lang-target   A tanár által tanított célnyelv (alapértelmezett: "
+"TARGET_LANGUAGE környezeti változó vagy német). Emellett"
+
+#: llm_engine.py:386
+msgid ""
+"                  switches the tutor name to match, per languages.py, unless "
+"env TUTOR_NAME is set."
+msgstr ""
+"                  a languages.py alapján a tanár nevét is ehhez igazítja, "
+"kivéve ha a TUTOR_NAME környezeti változó be van állítva."
+
+#: llm_engine.py:387
+msgid ""
+"  --level         Student's CEFR level, e.g. A1/A2/B1/B2 (default: env "
+"TEACHER_LEVEL or B1)"
+msgstr ""
+"  --level         A diák CEFR szintje, pl. A1/A2/B1/B2 (alapértelmezett: "
+"TEACHER_LEVEL környezeti változó vagy B1)"
+
+#: llm_engine.py:388
+msgid ""
+"  --ui-lang       Language for this CLI's own text, e.g. en/hu (default: env "
+"UI_LANGUAGE or system locale)"
+msgstr ""
+"  --ui-lang       Ennek a parancssori eszköznek a saját nyelve, pl. en/hu "
+"(alapértelmezett: UI_LANGUAGE környezeti változó vagy rendszernyelv)"
+
+#: llm_engine.py:395
+msgid "Usage: --host <ip-or-hostname>"
+msgstr "Használat: --host <ip-cím-vagy-hosztnév>"
+
+#: llm_engine.py:400
+msgid "Usage: --port <port>"
+msgstr "Használat: --port <port>"
+
+#: llm_engine.py:405
+msgid "Usage: --lang-target <language>"
+msgstr "Használat: --lang-target <nyelv>"
+
+#: llm_engine.py:420
+msgid "Usage: --level <cefr-level>"
+msgstr "Használat: --level <cefr-szint>"
+
+#: llm_engine.py:423
+#, python-brace-format
+msgid "Could not reach llama.cpp server at {url}"
+msgstr "Nem sikerült elérni a llama.cpp szervert itt: {url}"
+
+#: llm_engine.py:426
+#, python-brace-format
+msgid "Chatting with your {lang} tutor ({level}). Ctrl+C to quit.\n"
+msgstr "Beszélgetés a(z) {lang} tanároddal ({level}). Kilépés: Ctrl+C.\n"
+
+#: llm_engine.py:431
+msgid "You: "
+msgstr "Te: "
+
+#: llm_engine.py:434
+msgid "Tutor: "
+msgstr "Tanár: "
+
+#: llm_engine.py:439
+msgid ""
+"\n"
+"Bye!"
+msgstr ""
+"\n"
+"Viszlát!"

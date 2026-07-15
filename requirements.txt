@@ -1,0 +1,13 @@
+numpy
+sounddevice
+faster-whisper
+pynput
+soundfile
+gpiozero
+torch
+omnivoice
+piper-tts
+requests
+sqlite-vec
+pypdfium2
+iso639-lang

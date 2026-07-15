@@ -1,0 +1,48 @@
+# Copyrighted course material and anything derived from it -- see the RAG
+# ingestion pipeline in rag_engine.py. Never publish these: the PDFs are a
+# commercial publisher's textbook, and rag.sqlite3 stores extracted excerpts
+# of the same text.
+books/*
+!books/put_language_books_here.txt
+knowledge_base/*
+!knowledge_base/knowledge_base_will_be_here.txt
+
+# Model weights: large binaries that don't belong in git history, regardless
+# of license. Document how to fetch them instead of committing them.
+whisper-base-hungarian_v1/
+piper_voices/*
+!piper_voices/put_piper_voices_here.txt
+
+# Voice samples for cloning, upload only the default ones
+samples/*
+!samples/put_voice_samples_here.txt
+!samples/lucy_en.*
+!samples/anna_de.*
+!samples/alice_fr.*
+!samples/maria_es.*
+!samples/katalin_hu.*
+
+# Personal session transcripts (see main.py) -- these are the student's own
+# practice conversations, not project source.
+transcripts/*
+!transcripts/transcripts_will_be_here.txt
+logs/
+
+# Per-machine saved picks (see settings.py) -- language/level/mic/playback
+# choices for whoever ran the app locally, not project source.
+config.ini
+
+# Python
+__pycache__/
+*.pyc
+
+# Editor/OS
+.idea/
+.DS_Store
+*.save
+
+# Archive directory with manual saves
+archive/
+
+# Claude Code local permission overrides -- personal to this machine/session
+.claude/settings.local.json

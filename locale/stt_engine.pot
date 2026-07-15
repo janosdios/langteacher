@@ -1,0 +1,307 @@
+# SOME DESCRIPTIVE TITLE.
+# Copyright (C) YEAR THE PACKAGE'S COPYRIGHT HOLDER
+# This file is distributed under the same license as the stt_engine package.
+# FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
+#
+#, fuzzy
+msgid ""
+msgstr ""
+"Project-Id-Version: stt_engine\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2026-07-15 12:01+0200\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language-Team: LANGUAGE <LL@li.org>\n"
+"Language: \n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=CHARSET\n"
+"Content-Transfer-Encoding: 8bit\n"
+
+#: stt_engine.py:330
+msgid "Listening... (speak now)"
+msgstr ""
+
+#: stt_engine.py:398
+#, python-brace-format
+msgid ""
+"\n"
+" Recorded {duration}s"
+msgstr ""
+
+#: stt_engine.py:401
+msgid ""
+"\n"
+" Max recording length"
+msgstr ""
+
+#: stt_engine.py:409
+msgid ""
+"\n"
+"Speech detected!"
+msgstr ""
+
+#: stt_engine.py:414 stt_engine.py:493
+msgid ""
+"\n"
+"Recording stopped"
+msgstr ""
+
+#: stt_engine.py:430
+#, python-brace-format
+msgid "Hold {key} down to record, release to stop..."
+msgstr ""
+
+#: stt_engine.py:467
+msgid "Recording... (release key to stop)"
+msgstr ""
+
+#: stt_engine.py:486
+#, python-brace-format
+msgid "\r Recorded {duration}s        "
+msgstr ""
+
+#: stt_engine.py:489
+msgid "\r Max recording length        "
+msgstr ""
+
+#: stt_engine.py:579
+#, python-brace-format
+msgid "Recording ~{seconds}s for test..."
+msgstr ""
+
+#: stt_engine.py:611
+msgid "No available input device found!"
+msgstr ""
+
+#: stt_engine.py:612
+msgid "Application terminated!"
+msgstr ""
+
+#: stt_engine.py:619
+msgid "Please select an input device: "
+msgstr ""
+
+#: stt_engine.py:622
+msgid "Error! Please select a valid input device!"
+msgstr ""
+
+#: stt_engine.py:652 stt_engine.py:786 stt_engine.py:815
+#, python-brace-format
+msgid ""
+"\n"
+"Error: {error}"
+msgstr ""
+
+#: stt_engine.py:667
+msgid "Usage: --ui-lang <language-code>"
+msgstr ""
+
+#: stt_engine.py:673
+msgid "Usage: --whisper-model <model-name-or-path>"
+msgstr ""
+
+#: stt_engine.py:679
+msgid "Usage: --mic-device <source-id-or-name>"
+msgstr ""
+
+#: stt_engine.py:685
+msgid "Usage: --lang-target <language-code>"
+msgstr ""
+
+#: stt_engine.py:691
+msgid "Usage: --native-lang-target <language-code>"
+msgstr ""
+
+#: stt_engine.py:694
+msgid ""
+"\n"
+"\n"
+"Shutting down..."
+msgstr ""
+
+#: stt_engine.py:702
+msgid "STT Engine - USB Mic"
+msgstr ""
+
+#: stt_engine.py:703
+msgid ""
+"\n"
+"Usage: python3 stt_engine.py [--mic-device <id-or-name>] [--lang-target "
+"<language-code>] [--native-lang-target <language-code>] [--whisper-model "
+"<model-name-or-path>] [--test] [--list-devices] [--ui-lang <language-code>]"
+msgstr ""
+
+#: stt_engine.py:704
+msgid ""
+"  --mic-device        Force a specific input device (index or name substring)"
+msgstr ""
+
+#: stt_engine.py:705
+msgid ""
+"  --lang-target       Force a specific transcription language (default: auto-"
+"detect)"
+msgstr ""
+
+#: stt_engine.py:706
+msgid ""
+"  --native-lang-target  Also allow this language (e.g. to code-switch and "
+"ask for help), picked between it and --lang-target per utterance"
+msgstr ""
+
+#: stt_engine.py:707
+msgid ""
+"  --whisper-model     Whisper model name or path to use for transcription "
+"(default: env WHISPER_MODEL or 'small')"
+msgstr ""
+
+#: stt_engine.py:708
+msgid "  --list-devices      Show all available audio input/output devices"
+msgstr ""
+
+#: stt_engine.py:709
+msgid "  --test           Record ~3s and play back (quick audio sanity check)"
+msgstr ""
+
+#: stt_engine.py:710
+msgid ""
+"  --ui-lang        Language for this CLI's own text, e.g. en/hu (default: "
+"env UI_LANGUAGE or system locale)"
+msgstr ""
+
+#: stt_engine.py:713
+msgid "Available audio devices:"
+msgstr ""
+
+#: stt_engine.py:715
+#, python-brace-format
+msgid ""
+"\n"
+"Default input:  {name}"
+msgstr ""
+
+#: stt_engine.py:716
+#, python-brace-format
+msgid "Default output: {name}"
+msgstr ""
+
+#: stt_engine.py:722
+msgid "No audio captured during test."
+msgstr ""
+
+#: stt_engine.py:726
+msgid "Playing back test recording..."
+msgstr ""
+
+#: stt_engine.py:728
+msgid "Audio test complete!"
+msgstr ""
+
+#: stt_engine.py:731
+msgid "Loading speech recognition model..."
+msgstr ""
+
+#: stt_engine.py:735
+msgid "STT engine ready!"
+msgstr ""
+
+#: stt_engine.py:736
+msgid "Setup:"
+msgstr ""
+
+#: stt_engine.py:737
+msgid "- Microphone: Sounddevice default input"
+msgstr ""
+
+#: stt_engine.py:738
+#, python-brace-format
+msgid "- Stop: {stop_option}"
+msgstr ""
+
+#: stt_engine.py:739
+msgid "GPIO 22 button or Ctrl+C"
+msgstr ""
+
+#: stt_engine.py:739
+msgid "Press Ctrl+C"
+msgstr ""
+
+#: stt_engine.py:742
+#, python-brace-format
+msgid "- Mic target override: {target} - {name}"
+msgstr ""
+
+#: stt_engine.py:745
+#, python-brace-format
+msgid "- Language: {lang}"
+msgstr ""
+
+#: stt_engine.py:745
+msgid "auto-detect"
+msgstr ""
+
+#: stt_engine.py:747
+#, python-brace-format
+msgid "- Also allowing: {lang} (native language code-switch)"
+msgstr ""
+
+#: stt_engine.py:752
+msgid "0 - Voice activity detection"
+msgstr ""
+
+#: stt_engine.py:753
+msgid "1 - Press and hold recording"
+msgstr ""
+
+#: stt_engine.py:755
+msgid "Please select an input method: "
+msgstr ""
+
+#: stt_engine.py:758
+msgid "Error! Please select a valid input method!"
+msgstr ""
+
+#: stt_engine.py:760
+msgid ""
+"\n"
+"Listening for speech...\n"
+msgstr ""
+
+#: stt_engine.py:767 stt_engine.py:795
+msgid ""
+"\n"
+"Stop button pressed"
+msgstr ""
+
+#: stt_engine.py:776 stt_engine.py:805
+#, python-brace-format
+msgid "You said: \"{text}\""
+msgstr ""
+
+#: stt_engine.py:778 stt_engine.py:808
+msgid "No speech detected in the captured audio\n"
+msgstr ""
+
+#: stt_engine.py:780
+msgid "No speech detected.\n"
+msgstr ""
+
+#: stt_engine.py:783 stt_engine.py:812
+msgid ""
+"\n"
+"\n"
+"Interrupted by user"
+msgstr ""
+
+#: stt_engine.py:788 stt_engine.py:816
+msgid ""
+"\n"
+"Bye!"
+msgstr ""
+
+#: stt_engine.py:806
+msgid "Listening...\n"
+msgstr ""
+
+#: stt_engine.py:810
+msgid "No speech detected, still listening...\n"
+msgstr ""

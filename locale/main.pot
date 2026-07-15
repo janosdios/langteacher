@@ -1,0 +1,214 @@
+# SOME DESCRIPTIVE TITLE.
+# Copyright (C) YEAR THE PACKAGE'S COPYRIGHT HOLDER
+# This file is distributed under the same license as the main package.
+# FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
+#
+#, fuzzy
+msgid ""
+msgstr ""
+"Project-Id-Version: main\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2026-07-15 16:20+0200\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language-Team: LANGUAGE <LL@li.org>\n"
+"Language: \n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=CHARSET\n"
+"Content-Transfer-Encoding: 8bit\n"
+
+#: main.py:99
+msgid ""
+"\n"
+"\n"
+"Ending the session..."
+msgstr ""
+
+#: main.py:176
+msgid "Found settings from your last session:"
+msgstr ""
+
+#: main.py:177
+#, python-brace-format
+msgid "  Language: {language}"
+msgstr ""
+
+#: main.py:178
+#, python-brace-format
+msgid "  CEFR level: {level}"
+msgstr ""
+
+#: main.py:179
+#, python-brace-format
+msgid "  Native language: {language}"
+msgstr ""
+
+#: main.py:180
+#, python-brace-format
+msgid "  Mic device: {name}"
+msgstr ""
+
+#: main.py:181
+#, python-brace-format
+msgid "  Playback device: {name}"
+msgstr ""
+
+#: main.py:182
+msgid "Keep these settings? [Y/n]: "
+msgstr ""
+
+#: main.py:198
+msgid "Which language would you like to learn?"
+msgstr ""
+
+#: main.py:201
+msgid "What's your CEFR level?"
+msgstr ""
+
+#: main.py:204
+msgid "What's your native language?"
+msgstr ""
+
+#: main.py:224
+msgid "Didn't catch any speech in that recording.\n"
+msgstr ""
+
+#: main.py:227
+#, python-brace-format
+msgid "Heard: \"{text}\""
+msgstr ""
+
+#: main.py:236
+#, python-brace-format
+msgid "Tutor: {sentence}"
+msgstr ""
+
+#: main.py:242
+msgid "(Tutor is unreachable, no reply generated)\n"
+msgstr ""
+
+#: main.py:257
+msgid "Usage: --ui-lang <language-code>"
+msgstr ""
+
+#: main.py:263
+msgid "Usage: --whisper-model <model-name-or-path>"
+msgstr ""
+
+#: main.py:269
+msgid "Usage: --tts-engine <omnivoice|piper|auto>"
+msgstr ""
+
+#: main.py:276
+msgid "Usage: --tutor-host <ip-or-hostname> / --tutor-port <port>"
+msgstr ""
+
+#: main.py:285
+msgid "Usage: --rag-host <ip-or-hostname> / --rag-port <port>"
+msgstr ""
+
+#: main.py:290
+msgid "LangTeacher - voice-based language tutor"
+msgstr ""
+
+#: main.py:291
+msgid ""
+"\n"
+"Usage: python3 main.py [--no-recap] [--whisper-model <model-name-or-path>] "
+"[--tts-engine <omnivoice|piper|auto>] [--tutor-host <ip-or-hostname>] [--"
+"tutor-port <port>] [--rag-host <ip-or-hostname>] [--rag-port <port>] [--ui-"
+"lang <language-code>]"
+msgstr ""
+
+#: main.py:292
+msgid ""
+"  --no-recap       Start with a clean slate, ignoring any previous session's "
+"recap"
+msgstr ""
+
+#: main.py:293
+msgid ""
+"  --whisper-model  Whisper model name or path to use for transcription "
+"(default: env WHISPER_MODEL or 'small'); pick according to platform/"
+"language, e.g. a smaller model on a Raspberry Pi or a language-specific fine-"
+"tune"
+msgstr ""
+
+#: main.py:294
+msgid ""
+"  --tts-engine     TTS backend to use: omnivoice (voice cloning/design), "
+"piper (lightweight, e.g. for a Raspberry Pi), or auto (default: env "
+"TTS_ENGINE or 'auto')"
+msgstr ""
+
+#: main.py:295
+msgid ""
+"  --tutor-host     llama.cpp server host for the tutor LLM (default: env "
+"LLAMACPP_HOST or 127.0.0.1)"
+msgstr ""
+
+#: main.py:296
+msgid ""
+"  --tutor-port     llama.cpp server port for the tutor LLM (default: env "
+"LLAMACPP_PORT or 8080)"
+msgstr ""
+
+#: main.py:297
+msgid ""
+"  --rag-host       llama.cpp server host for the RAG embedding model "
+"(default: env EMBED_HOST or 127.0.0.1)"
+msgstr ""
+
+#: main.py:298
+msgid ""
+"  --rag-port       llama.cpp server port for the RAG embedding model "
+"(default: env EMBED_PORT or 8081)"
+msgstr ""
+
+#: main.py:299
+msgid ""
+"  --ui-lang        Language for this CLI's own text, e.g. en/hu (default: "
+"env UI_LANGUAGE or system locale)"
+msgstr ""
+
+#: main.py:328
+#, python-brace-format
+msgid "Could not reach the tutor's language model at {host}:{port}."
+msgstr ""
+
+#: main.py:331
+msgid "Check LLAMACPP_HOST/LLAMACPP_PORT and that llama-server is running."
+msgstr ""
+
+#: main.py:344
+msgid ""
+"RAG knowledge base unavailable, continuing without it (set RAG_ENABLED=false "
+"to silence this)."
+msgstr ""
+
+#: main.py:347
+msgid "Loading speech recognition model..."
+msgstr ""
+
+#: main.py:349
+msgid "Loading voice model..."
+msgstr ""
+
+#: main.py:353
+#, python-brace-format
+msgid ""
+"\n"
+"LangTeacher ready. Hold {key} to talk (Ctrl+C to quit).\n"
+msgstr ""
+
+#: main.py:355
+msgid ""
+"\n"
+"LangTeacher ready. Speak whenever you like (Ctrl+C to quit).\n"
+msgstr ""
+
+#: main.py:361
+msgid ""
+"\n"
+"Unexpected error, ending the session."
+msgstr ""

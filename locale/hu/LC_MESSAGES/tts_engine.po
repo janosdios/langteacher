@@ -1,0 +1,288 @@
+# Hungarian translations for tts_engine CLI strings.
+msgid ""
+msgstr ""
+"Project-Id-Version: tts_engine\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2026-07-15 09:26+0200\n"
+"PO-Revision-Date: 2026-07-15 09:26+0200\n"
+"Last-Translator: \n"
+"Language-Team: Hungarian\n"
+"Language: hu\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+
+#: tts_engine.py:190
+msgid "No available output device found!"
+msgstr "Nem található elérhető kimeneti eszköz!"
+
+#: tts_engine.py:191
+msgid "Application terminated!"
+msgstr "Az alkalmazás leállt!"
+
+#: tts_engine.py:198
+msgid "Please select an output device: "
+msgstr "Válassz egy kimeneti eszközt: "
+
+#: tts_engine.py:201
+msgid "Error! Please select a valid output device!"
+msgstr "Hiba! Válassz egy érvényes kimeneti eszközt!"
+
+#: tts_engine.py:254
+msgid "0: (none - auto voice)"
+msgstr "0: (nincs - automatikus hang)"
+
+#: tts_engine.py:260
+msgid "Please select a reference voice: "
+msgstr "Válassz egy referencia hangot: "
+
+#: tts_engine.py:262
+msgid "Error! Please enter a number!"
+msgstr "Hiba! Adj meg egy számot!"
+
+#: tts_engine.py:268
+msgid "Error! Please select a valid option!"
+msgstr "Hiba! Válassz egy érvényes lehetőséget!"
+
+#: tts_engine.py:345 tts_engine.py:502
+#, python-brace-format
+msgid ""
+"\n"
+"Error: {error}"
+msgstr ""
+"\n"
+"Hiba: {error}"
+
+#: tts_engine.py:361
+msgid "Usage: --ui-lang <language-code>"
+msgstr "Használat: --ui-lang <nyelvkód>"
+
+#: tts_engine.py:367
+msgid "Usage: --playback-target <output-id-or-name>"
+msgstr "Használat: --playback-target <kimenet-azonosító-vagy-név>"
+
+#: tts_engine.py:373
+msgid "Usage: --lang-target <language-code>"
+msgstr "Használat: --lang-target <nyelvkód>"
+
+#: tts_engine.py:379
+msgid "Usage: --instruct <voice-style-description>"
+msgstr "Használat: --instruct <hangstílus-leírás>"
+
+#: tts_engine.py:385
+msgid "Usage: --ref-audio <path-or-name-in-samples-dir>"
+msgstr "Használat: --ref-audio <útvonal-vagy-név-a-samples-mappában>"
+
+#: tts_engine.py:391
+msgid "Usage: --ref-text <transcript-of-reference-audio>"
+msgstr "Használat: --ref-text <a-referencia-hang-átirata>"
+
+#: tts_engine.py:423
+msgid ""
+"\n"
+"\n"
+"Shutting down..."
+msgstr ""
+"\n"
+"\n"
+"Leállítás..."
+
+#: tts_engine.py:431
+msgid "TTS Engine - OmniVoice"
+msgstr "TTS motor - OmniVoice"
+
+#: tts_engine.py:432
+msgid ""
+"\n"
+"Usage: python3 tts_engine.py [--playback-target <id-or-name>] [--lang-target "
+"<language-code>] [--instruct <voice-style>] [--ref-audio <path-or-name>] [--"
+"ref-text <transcript>] [--test] [--list-devices] [--list-voices] [--ui-lang "
+"<language-code>]"
+msgstr ""
+"\n"
+"Használat: python3 tts_engine.py [--playback-target <azonosító-vagy-név>] "
+"[--lang-target <nyelvkód>] [--instruct <hangstílus>] [--ref-audio <útvonal-"
+"vagy-név>] [--ref-text <átirat>] [--test] [--list-devices] [--list-voices] "
+"[--ui-lang <nyelvkód>]"
+
+#: tts_engine.py:433
+msgid ""
+"  --playback-target  Force a specific output device (index or name substring)"
+msgstr ""
+"  --playback-target  Egy adott kimeneti eszköz kényszerítése (index vagy "
+"névrészlet)"
+
+#: tts_engine.py:434
+msgid ""
+"  --lang-target      Force a specific synthesis language (default: auto)"
+msgstr ""
+"  --lang-target      Egy adott szintézisnyelv kényszerítése (alapértelmezett: "
+"auto)"
+
+#: tts_engine.py:435
+msgid ""
+"  --instruct         Voice design instruction, e.g. \"male, British accent\""
+msgstr ""
+"  --instruct         Hangtervezési utasítás, pl. \"male, British accent\""
+
+#: tts_engine.py:436
+msgid ""
+"  --ref-audio        Reference audio for voice cloning (path, or name/"
+"substring of a file in samples/)"
+msgstr ""
+"  --ref-audio        Referencia hang a hangklónozáshoz (útvonal, vagy egy "
+"fájl neve/névrészlete a samples/ mappában)"
+
+#: tts_engine.py:437
+msgid ""
+"  --ref-text         Transcript of the reference audio (default: auto-"
+"transcribed)"
+msgstr ""
+"  --ref-text         A referencia hang átirata (alapértelmezett: automatikus "
+"átirat)"
+
+#: tts_engine.py:438
+msgid "  --list-devices     Show all available audio input/output devices"
+msgstr ""
+"  --list-devices     Az összes elérhető audio be- és kimeneti eszköz "
+"megjelenítése"
+
+#: tts_engine.py:439
+msgid "  --list-voices      Show reference audio files available in samples/"
+msgstr ""
+"  --list-voices      A samples/ mappában elérhető referencia hangfájlok "
+"megjelenítése"
+
+#: tts_engine.py:440
+msgid ""
+"  --check-updates    Check the HF Hub for a newer model revision instead of "
+"using the local cache offline"
+msgstr ""
+"  --check-updates    Új modellverzió keresése a HF Hub-on, ahelyett hogy a "
+"helyi gyorsítótárat használná offline módban"
+
+#: tts_engine.py:441
+msgid ""
+"  --test             Synthesize and play a short built-in phrase (quick "
+"sanity check)"
+msgstr ""
+"  --test             Egy rövid beépített mondat szintetizálása és lejátszása "
+"(gyors ellenőrzés)"
+
+#: tts_engine.py:442
+msgid ""
+"  --ui-lang          Language for this CLI's own text, e.g. en/hu (default: "
+"env UI_LANGUAGE or system locale)"
+msgstr ""
+"  --ui-lang          Ennek a parancssori eszköznek a saját nyelve, pl. en/hu "
+"(alapértelmezett: UI_LANGUAGE környezeti változó vagy rendszernyelv)"
+
+#: tts_engine.py:446
+msgid "Available audio devices:"
+msgstr "Elérhető audioeszközök:"
+
+#: tts_engine.py:448
+#, python-brace-format
+msgid ""
+"\n"
+"Default input:  {name}"
+msgstr ""
+"\n"
+"Alapértelmezett bemenet:  {name}"
+
+#: tts_engine.py:449
+#, python-brace-format
+msgid "Default output: {name}"
+msgstr "Alapértelmezett kimenet: {name}"
+
+#: tts_engine.py:453
+#, python-brace-format
+msgid "Reference voices in {dir}:"
+msgstr "Referencia hangok itt: {dir}:"
+
+#: tts_engine.py:458
+#, python-brace-format
+msgid "No reference audio files found in {dir}"
+msgstr "Nem található referencia hangfájl itt: {dir}"
+
+#: tts_engine.py:461 tts_engine.py:474
+msgid "Loading voice model..."
+msgstr "Hangmodell betöltése..."
+
+#: tts_engine.py:463
+msgid "Synthesizing test phrase..."
+msgstr "Tesztmondat szintetizálása..."
+
+#: tts_engine.py:466
+msgid "Synthesis failed during test."
+msgstr "A szintézis sikertelen volt a teszt során."
+
+#: tts_engine.py:469
+msgid "Playing back test synthesis..."
+msgstr "Tesztszintézis lejátszása..."
+
+#: tts_engine.py:471
+msgid "Audio test complete!"
+msgstr "Hangteszt kész!"
+
+#: tts_engine.py:477
+msgid "TTS engine ready!"
+msgstr "A TTS motor készen áll!"
+
+#: tts_engine.py:478
+msgid "Setup:"
+msgstr "Beállítás:"
+
+#: tts_engine.py:479
+msgid "- Speaker: Sounddevice default output"
+msgstr "- Hangszóró: Sounddevice alapértelmezett kimenet"
+
+#: tts_engine.py:480
+msgid "- Stop: Press Ctrl+C"
+msgstr "- Leállítás: Ctrl+C"
+
+#: tts_engine.py:482
+#, python-brace-format
+msgid "- Playback target override: {target} - {name}"
+msgstr "- Kimeneti eszköz felülbírálva: {target} - {name}"
+
+#: tts_engine.py:485
+#, python-brace-format
+msgid "- Language: {lang}"
+msgstr "- Nyelv: {lang}"
+
+#: tts_engine.py:485 tts_engine.py:490
+msgid "auto"
+msgstr "automatikus"
+
+#: tts_engine.py:488
+#, python-brace-format
+msgid "- Voice: cloned from {ref_audio}"
+msgstr "- Hang: klónozva innen: {ref_audio}"
+
+#: tts_engine.py:490
+#, python-brace-format
+msgid "- Voice: {instruct}"
+msgstr "- Hang: {instruct}"
+
+#: tts_engine.py:494
+msgid "Enter text to speak: "
+msgstr "Írd be a felolvasandó szöveget: "
+
+#: tts_engine.py:499
+msgid ""
+"\n"
+"\n"
+"Interrupted by user"
+msgstr ""
+"\n"
+"\n"
+"Felhasználó által megszakítva"
+
+#: tts_engine.py:504
+msgid ""
+"\n"
+"Bye!"
+msgstr ""
+"\n"
+"Viszlát!"
