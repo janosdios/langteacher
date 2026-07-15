@@ -1,6 +1,7 @@
 # LangTeacher
 
 [![License: PolyForm Noncommercial 1.0.0](https://img.shields.io/badge/License-PolyForm%20Noncommercial%201.0.0-blue.svg)](LICENSE)
+[![Platforms: macOS | Windows | Linux | Raspberry Pi 5+](https://img.shields.io/badge/Platforms-macOS%20%7C%20Windows%20%7C%20Linux%20%7C%20Raspberry%20Pi%205%2B-lightgrey.svg)](#requirements)
 
 A voice-based language tutor that runs entirely on your own hardware. Talk
 to it out loud in the language you're learning, it listens, thinks, and
