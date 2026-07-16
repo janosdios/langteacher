@@ -1,5 +1,9 @@
 """Persisted user picks -- language to learn, CEFR level, native language,
-mic/playback device targets -- stored in config.ini next to this file.
+mic/playback device targets -- stored in a per-machine config.<hostname>.ini
+next to this file. One file per machine because mic/playback are sounddevice
+indices that only make sense on the machine that picked them; this project
+directory is synced across several machines (see README), so a shared
+config.ini would leak one machine's device indices into another's.
 
 main() reads this at startup and offers to reuse the previous session's
 picks instead of running the interactive pickers again; it writes back
@@ -8,9 +12,12 @@ prompt has something to offer on the following run.
 """
 
 import configparser
+import platform
+import re
 from pathlib import Path
 
-SETTINGS_PATH = Path(__file__).resolve().parent / "config.ini"
+_HOSTNAME = re.sub(r"[^A-Za-z0-9._-]", "_", platform.node() or "default")
+SETTINGS_PATH = Path(__file__).resolve().parent / f"config.{_HOSTNAME}.ini"
 
 _SECTION = "langteacher"
 

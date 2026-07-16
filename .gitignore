@@ -29,8 +29,10 @@ transcripts/*
 logs/
 
 # Per-machine saved picks (see settings.py) -- language/level/mic/playback
-# choices for whoever ran the app locally, not project source.
-config.ini
+# choices for whoever ran the app locally, not project source. One file per
+# machine (config.<hostname>.ini), since this directory is synced across
+# several machines and mic/playback indices don't carry over between them.
+config*.ini
 
 # Python
 __pycache__/

@@ -494,8 +494,9 @@ def main():
     if "--lang-target" in args:
         try:
             lang_profile = languages.get_language(LANG_TARGET.lower())
-        except ValueError:
+        except ValueError as e:
             logger.warning(f"No languages.py profile for '{LANG_TARGET}', keeping current voice.")
+            print(_("Warning: {error} -- keeping current voice.").format(error=e))
         else:
             if "--ref-audio" not in args:
                 REF_AUDIO_TARGET = lang_profile["ref_audio_target"]
@@ -523,7 +524,7 @@ def main():
     signal.signal(signal.SIGTERM, shutdown_handler)
 
     if len(args) > 0:
-        if args[0] == "--help":
+        if "--help" in args:
             print(_("TTS Engine - OmniVoice / Piper"))
             print(_("\nUsage: python3 tts_engine.py [--engine <omnivoice|piper|auto>] [--playback-target <id-or-name>] [--lang-target <language-code>] [--instruct <voice-style>] [--ref-audio <path-or-name>] [--ref-text <transcript>] [--test] [--list-devices] [--list-voices] [--ui-lang <language-code>]"))
             print(_("  --engine           TTS backend to use: omnivoice (voice cloning/design), piper (lightweight, e.g. for a Raspberry Pi), or auto (default: env TTS_ENGINE or 'auto')"))
@@ -537,13 +538,17 @@ def main():
             print(_("  --check-updates    Check the HF Hub for a newer model revision instead of using the local cache offline (omnivoice only)"))
             print(_("  --test             Synthesize and play a short built-in phrase (quick sanity check)"))
             print(_("  --ui-lang          Language for this CLI's own text, e.g. en/hu (default: env UI_LANGUAGE or system locale)"))
-            print(_detect_device())
             sys.exit(0)
         elif "--list-devices" in args:
-            print(_("Available audio devices:"))
-            print(sd.query_devices())
-            print(_("\nDefault input:  {name}").format(name=sd.query_devices(kind='input')['name']))
-            print(_("Default output: {name}").format(name=sd.query_devices(kind='output')['name']))
+            hostapis = sd.query_hostapis()
+            output_devices = [(i, d) for i, d in enumerate(sd.query_devices()) if d['max_output_channels'] > 0]
+            print(_("Output devices (usable with --playback-target <index>):"))
+            if output_devices:
+                for i, d in output_devices:
+                    print(f"  {i}: {d['name']} [{hostapis[d['hostapi']]['name']}] ({d['max_output_channels']} out)")
+            else:
+                print(_("  (none found)"))
+            print(_("\nDefault output: {name}").format(name=sd.query_devices(kind='output')['name']))
             sys.exit(0)
         elif "--list-voices" in args:
             if SAMPLES_DIR.is_dir() and any(SAMPLES_DIR.iterdir()):

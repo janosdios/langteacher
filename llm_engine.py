@@ -379,7 +379,7 @@ def main():
         except IndexError:
             print(_("Usage: --ui-lang <language-code>"))
 
-    if args and args[0] == "--help":
+    if "--help" in args:
         print(_("LLM Engine - llama.cpp tutor client"))
         print(_("\nUsage: python3 llm_engine.py [--host <ip-or-hostname>] [--port <port>] [--lang-target <language>] [--level <cefr-level>] [--ui-lang <language-code>]"))
         print(_("  --host          llama.cpp server host (default: env LLAMACPP_HOST or 127.0.0.1)"))

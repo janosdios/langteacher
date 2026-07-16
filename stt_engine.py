@@ -9,8 +9,14 @@ import threading
 import logging
 import gettext
 import colors
+import languages
 from pathlib import Path
 from faster_whisper import WhisperModel, decode_audio
+try:
+    #noinspection PyProtectedMember
+    from faster_whisper.tokenizer import _LANGUAGE_CODES as _FASTER_WHISPER_LANGUAGE_CODES
+except ImportError:
+    _FASTER_WHISPER_LANGUAGE_CODES = None
 import sounddevice as sd
 import numpy as np
 from pynput import keyboard
@@ -572,6 +578,7 @@ def run_transcription(whisper_model, audio_path):
         return text.strip() if text else None
     except Exception as e:
         logger.error(f"Transcription error: {e}")
+        print(_("\nTranscription error: {error}").format(error=e))
         return None
 
 # noinspection PyBroadException
@@ -655,6 +662,15 @@ def record_speech(method="vad"):
 
 # ===== Main =====
 
+def _resolve_lang_code(value):
+    """Accept either a full language name (matched against languages.py's
+    LANGUAGES, e.g. "hungarian") or an ISO 639-1 code Whisper already
+    understands (e.g. "hu"), and return the short code Whisper needs."""
+    try:
+        return languages.get_language(value.lower())["code"]
+    except ValueError:
+        return value
+
 # noinspection PyBroadException
 def main():
 
@@ -681,15 +697,22 @@ def main():
 
     if "--lang-target" in args:
         try:
-            LANG_TARGET = args[args.index("--lang-target") + 1]
+            LANG_TARGET = _resolve_lang_code(args[args.index("--lang-target") + 1])
         except Exception:
             print(_("Usage: --lang-target <language-code>"))
 
     if "--native-lang-target" in args:
         try:
-            NATIVE_LANG_TARGET = args[args.index("--native-lang-target") + 1]
+            NATIVE_LANG_TARGET = _resolve_lang_code(args[args.index("--native-lang-target") + 1])
         except Exception:
             print(_("Usage: --native-lang-target <language-code>"))
+
+    if _FASTER_WHISPER_LANGUAGE_CODES is not None:
+        for flag, value in (("--lang-target", LANG_TARGET), ("--native-lang-target", NATIVE_LANG_TARGET)):
+            if value and value.lower() != "multi" and value not in _FASTER_WHISPER_LANGUAGE_CODES:
+                print(_("'{value}' ({flag}) is not a language Whisper understands.").format(value=value, flag=flag))
+                print(_("Valid codes: {codes}").format(codes=", ".join(sorted(_FASTER_WHISPER_LANGUAGE_CODES))))
+                sys.exit(1)
 
     def shutdown_handler(sig, frame):
         logger.debug(f"Signal received: {sig}, {frame} ")
@@ -700,11 +723,11 @@ def main():
     signal.signal(signal.SIGTERM, shutdown_handler)
 
     if len(args) > 0:
-        if args[0] == "--help":
+        if "--help" in args:
             print(_("STT Engine - USB Mic"))
             print(_("\nUsage: python3 stt_engine.py [--mic-device <id-or-name>] [--lang-target <language-code>] [--native-lang-target <language-code>] [--whisper-model <model-name-or-path>] [--test] [--list-devices] [--ui-lang <language-code>]"))
             print(_("  --mic-device        Force a specific input device (index or name substring)"))
-            print(_("  --lang-target       Force a specific transcription language (default: auto-detect)"))
+            print(_("  --lang-target       Force a specific transcription language, e.g. en/hu (default: auto-detect)"))
             print(_("  --native-lang-target  Also allow this language (e.g. to code-switch and ask for help), picked between it and --lang-target per utterance"))
             print(_("  --whisper-model     Whisper model name or path to use for transcription (default: env WHISPER_MODEL or 'small')"))
             print(_("  --list-devices      Show all available audio input/output devices"))
@@ -712,10 +735,15 @@ def main():
             print(_("  --ui-lang        Language for this CLI's own text, e.g. en/hu (default: env UI_LANGUAGE or system locale)"))
             sys.exit(0)
         elif "--list-devices" in args:
-            print(_("Available audio devices:"))
-            print(sd.query_devices())
+            hostapis = sd.query_hostapis()
+            input_devices = [(i, d) for i, d in enumerate(sd.query_devices()) if d['max_input_channels'] > 0]
+            print(_("Input devices (usable with --mic-device <index>):"))
+            if input_devices:
+                for i, d in input_devices:
+                    print(f"  {i}: {d['name']} [{hostapis[d['hostapi']]['name']}] ({d['max_input_channels']} in)")
+            else:
+                print(_("  (none found)"))
             print(_("\nDefault input:  {name}").format(name=sd.query_devices(kind='input')['name']))
-            print(_("Default output: {name}").format(name=sd.query_devices(kind='output')['name']))
             sys.exit(0)
         elif args[0] == "--test" or "--test" in args:
             stop_button = stop_button_handle()

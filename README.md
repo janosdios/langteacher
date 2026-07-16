@@ -69,7 +69,7 @@ keys, no per-message cost.
 | [`tts_engine.py`](tts_engine.py) | Speech synthesis and playback, via OmniVoice (voice cloning/design) or Piper (lightweight, pretrained voices). |
 | [`rag_engine.py`](rag_engine.py) | PDF ingestion and retrieval for the optional course-material knowledge base. |
 | [`languages.py`](languages.py) | Per-language tutor profiles (STT code, OCR pack, persona, reference voice, Piper voice) and CEFR/native-language pickers. |
-| [`settings.py`](settings.py) | Persists your language/level/native-language/device picks between runs (`config.ini`). |
+| [`settings.py`](settings.py) | Persists your language/level/native-language/device picks between runs (`config.<hostname>.ini`, one file per machine). |
 
 Each engine module also works standalone for testing, e.g.
 `python3 stt_engine.py --test` or `python3 tts_engine.py --list-voices`
@@ -144,7 +144,8 @@ python3 main.py --tutor-host 192.168.1.10 --tutor-port 8080 --rag-host 192.168.1
 
 On first run you'll be prompted to pick your target language, CEFR level,
 native language, microphone, and playback device — these are saved to
-`config.ini` and offered again next time. Hold Right Shift to talk
+`config.<hostname>.ini` (one per machine, since mic/playback picks don't
+carry over between machines) and offered again next time. Hold Right Shift to talk
 (push-to-talk is the default; see `RECORD_METHOD` in `main.py` to switch to
 hands-free VAD).
 
@@ -211,7 +212,7 @@ same list from the CLI.
 Two settings are env-only, with no CLI flag on `main.py`: `RAG_ENABLED` (default `true`)
 turns the RAG knowledge base on/off, and target language/CEFR level/native
 language/mic/playback device are picked interactively on first run (or reused from
-`config.ini`) rather than passed as flags.
+`config.<hostname>.ini`) rather than passed as flags.
 
 ### `stt_engine.py`
 
@@ -267,7 +268,7 @@ samples/         Voice-cloning reference audio
 piper_voices/    Downloaded Piper .onnx/.onnx.json voice files
 transcripts/     Your session transcripts + recap summaries
 logs/            Per-module log files
-config.ini       Your saved settings
+config.<hostname>.ini   Your saved settings for this machine (one file per machine)
 locale/          CLI translation catalogs, see locale/LOCALIZATION.md to edit/add one
 ```
 

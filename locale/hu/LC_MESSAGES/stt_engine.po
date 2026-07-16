@@ -3,7 +3,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: stt_engine\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-07-15 12:01+0200\n"
+"POT-Creation-Date: 2026-07-16 16:59+0200\n"
 "PO-Revision-Date: 2026-07-15 10:50+0200\n"
 "Last-Translator: \n"
 "Language-Team: Hungarian\n"
@@ -12,11 +12,11 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 
-#: stt_engine.py:330
+#: stt_engine.py:334
 msgid "Listening... (speak now)"
 msgstr "Hallgatás... (beszélj most)"
 
-#: stt_engine.py:398
+#: stt_engine.py:402
 #, python-brace-format
 msgid ""
 "\n"
@@ -25,7 +25,7 @@ msgstr ""
 "\n"
 " Felvéve: {duration}s"
 
-#: stt_engine.py:401
+#: stt_engine.py:405
 msgid ""
 "\n"
 " Max recording length"
@@ -33,7 +33,7 @@ msgstr ""
 "\n"
 " Elérte a maximális felvételi hosszt"
 
-#: stt_engine.py:409
+#: stt_engine.py:413
 msgid ""
 "\n"
 "Speech detected!"
@@ -41,7 +41,7 @@ msgstr ""
 "\n"
 "Beszéd érzékelve!"
 
-#: stt_engine.py:414 stt_engine.py:493
+#: stt_engine.py:418 stt_engine.py:498
 msgid ""
 "\n"
 "Recording stopped"
@@ -49,48 +49,57 @@ msgstr ""
 "\n"
 "A felvétel leállt"
 
-#: stt_engine.py:430
+#: stt_engine.py:435
 #, python-brace-format
 msgid "Hold {key} down to record, release to stop..."
 msgstr ""
 "Tartsd lenyomva a(z) {key} billentyűt a felvételhez, engedd el a "
 "leállításhoz..."
 
-#: stt_engine.py:467
+#: stt_engine.py:472
 msgid "Recording... (release key to stop)"
 msgstr "Felvétel... (engedd el a billentyűt a leállításhoz)"
 
-#: stt_engine.py:486
+#: stt_engine.py:491
 #, python-brace-format
 msgid "\r Recorded {duration}s        "
 msgstr "\r Felvéve: {duration}s        "
 
-#: stt_engine.py:489
+#: stt_engine.py:494
 msgid "\r Max recording length        "
 msgstr "\r Elérte a maximális felvételi hosszt        "
 
-#: stt_engine.py:579
+#: stt_engine.py:581
+#, python-brace-format
+msgid ""
+"\n"
+"Transcription error: {error}"
+msgstr ""
+"\n"
+"Átiratkészítési hiba: {error}"
+
+#: stt_engine.py:586
 #, python-brace-format
 msgid "Recording ~{seconds}s for test..."
 msgstr "Felvétel ~{seconds}s a teszthez..."
 
-#: stt_engine.py:611
+#: stt_engine.py:618
 msgid "No available input device found!"
 msgstr "Nem található elérhető bemeneti eszköz!"
 
-#: stt_engine.py:612
+#: stt_engine.py:619
 msgid "Application terminated!"
 msgstr "Az alkalmazás leállt!"
 
-#: stt_engine.py:619
+#: stt_engine.py:626
 msgid "Please select an input device: "
 msgstr "Válassz egy bemeneti eszközt: "
 
-#: stt_engine.py:622
+#: stt_engine.py:629
 msgid "Error! Please select a valid input device!"
 msgstr "Hiba! Válassz egy érvényes bemeneti eszközt!"
 
-#: stt_engine.py:652 stt_engine.py:786 stt_engine.py:815
+#: stt_engine.py:660 stt_engine.py:816 stt_engine.py:845
 #, python-brace-format
 msgid ""
 "\n"
@@ -99,27 +108,37 @@ msgstr ""
 "\n"
 "Hiba: {error}"
 
-#: stt_engine.py:667
+#: stt_engine.py:684
 msgid "Usage: --ui-lang <language-code>"
 msgstr "Használat: --ui-lang <nyelvkód>"
 
-#: stt_engine.py:673
+#: stt_engine.py:690
 msgid "Usage: --whisper-model <model-name-or-path>"
 msgstr "Használat: --whisper-model <modellnév-vagy-elérési-út>"
 
-#: stt_engine.py:679
+#: stt_engine.py:696
 msgid "Usage: --mic-device <source-id-or-name>"
 msgstr "Használat: --mic-device <forrás-azonosító-vagy-név>"
 
-#: stt_engine.py:685
+#: stt_engine.py:702
 msgid "Usage: --lang-target <language-code>"
 msgstr "Használat: --lang-target <nyelvkód>"
 
-#: stt_engine.py:691
+#: stt_engine.py:708
 msgid "Usage: --native-lang-target <language-code>"
 msgstr "Használat: --native-lang-target <nyelvkód>"
 
-#: stt_engine.py:694
+#: stt_engine.py:713
+#, python-brace-format
+msgid "'{value}' ({flag}) is not a language Whisper understands."
+msgstr "'{value}' ({flag}) nem egy olyan nyelvi kód, amit a Whisper felismer."
+
+#: stt_engine.py:714
+#, python-brace-format
+msgid "Valid codes: {codes}"
+msgstr "Érvényes kódok: {codes}"
+
+#: stt_engine.py:719
 msgid ""
 "\n"
 "\n"
@@ -129,11 +148,11 @@ msgstr ""
 "\n"
 "Leállítás..."
 
-#: stt_engine.py:702
+#: stt_engine.py:727
 msgid "STT Engine - USB Mic"
 msgstr "STT motor - USB mikrofon"
 
-#: stt_engine.py:703
+#: stt_engine.py:728
 msgid ""
 "\n"
 "Usage: python3 stt_engine.py [--mic-device <id-or-name>] [--lang-target "
@@ -145,22 +164,22 @@ msgstr ""
 "target <nyelvkód>] [--native-lang-target <nyelvkód>] [--whisper-model "
 "<modellnév-vagy-elérési-út>] [--test] [--list-devices] [--ui-lang <nyelvkód>]"
 
-#: stt_engine.py:704
+#: stt_engine.py:729
 msgid ""
 "  --mic-device        Force a specific input device (index or name substring)"
 msgstr ""
 "  --mic-device        Egy adott bemeneti eszköz kényszerítése (index vagy "
 "névrészlet)"
 
-#: stt_engine.py:705
+#: stt_engine.py:730
 msgid ""
-"  --lang-target       Force a specific transcription language (default: auto-"
-"detect)"
+"  --lang-target       Force a specific transcription language, e.g. en/hu "
+"(default: auto-detect)"
 msgstr ""
-"  --lang-target       Egy adott átirat-nyelv kényszerítése (alapértelmezett: "
-"automatikus felismerés)"
+"  --lang-target       Egy adott átirat-nyelv kényszerítése, pl. en/hu "
+"(alapértelmezett: automatikus felismerés)"
 
-#: stt_engine.py:706
+#: stt_engine.py:731
 msgid ""
 "  --native-lang-target  Also allow this language (e.g. to code-switch and "
 "ask for help), picked between it and --lang-target per utterance"
@@ -169,25 +188,26 @@ msgstr ""
 "nyelvváltáshoz segítségkéréskor), megnyilatkozásonként választva e és a --"
 "lang-target között"
 
-#: stt_engine.py:707
+#: stt_engine.py:732
 msgid ""
 "  --whisper-model     Whisper model name or path to use for transcription "
 "(default: env WHISPER_MODEL or 'small')"
 msgstr ""
-"  --whisper-model     Whisper modell neve vagy elérési útja az átiratkészítéshez "
-"(alapértelmezett: WHISPER_MODEL környezeti változó vagy 'small')"
+"  --whisper-model     Whisper modell neve vagy elérési útja az "
+"átiratkészítéshez (alapértelmezett: WHISPER_MODEL környezeti változó vagy "
+"'small')"
 
-#: stt_engine.py:708
+#: stt_engine.py:733
 msgid "  --list-devices      Show all available audio input/output devices"
 msgstr ""
 "  --list-devices      Az összes elérhető audio be- és kimeneti eszköz "
 "megjelenítése"
 
-#: stt_engine.py:709
+#: stt_engine.py:734
 msgid "  --test           Record ~3s and play back (quick audio sanity check)"
 msgstr "  --test           ~3s felvétel és lejátszás (gyors hangellenőrzés)"
 
-#: stt_engine.py:710
+#: stt_engine.py:735
 msgid ""
 "  --ui-lang        Language for this CLI's own text, e.g. en/hu (default: "
 "env UI_LANGUAGE or system locale)"
@@ -195,11 +215,15 @@ msgstr ""
 "  --ui-lang        Ennek a parancssori eszköznek a saját nyelve, pl. en/hu "
 "(alapértelmezett: UI_LANGUAGE környezeti változó vagy rendszernyelv)"
 
-#: stt_engine.py:713
-msgid "Available audio devices:"
-msgstr "Elérhető audioeszközök:"
+#: stt_engine.py:740
+msgid "Input devices (usable with --mic-device <index>):"
+msgstr "Bemeneti eszközök (a --mic-device <index> kapcsolóval használhatók):"
 
-#: stt_engine.py:715
+#: stt_engine.py:745
+msgid "  (none found)"
+msgstr "  (nincs találat)"
+
+#: stt_engine.py:746
 #, python-brace-format
 msgid ""
 "\n"
@@ -208,88 +232,83 @@ msgstr ""
 "\n"
 "Alapértelmezett bemenet:  {name}"
 
-#: stt_engine.py:716
-#, python-brace-format
-msgid "Default output: {name}"
-msgstr "Alapértelmezett kimenet: {name}"
-
-#: stt_engine.py:722
+#: stt_engine.py:752
 msgid "No audio captured during test."
 msgstr "Nem sikerült hangot rögzíteni a teszt során."
 
-#: stt_engine.py:726
+#: stt_engine.py:756
 msgid "Playing back test recording..."
 msgstr "Tesztfelvétel lejátszása..."
 
-#: stt_engine.py:728
+#: stt_engine.py:758
 msgid "Audio test complete!"
 msgstr "Hangteszt kész!"
 
-#: stt_engine.py:731
+#: stt_engine.py:761
 msgid "Loading speech recognition model..."
 msgstr "Beszédfelismerő modell betöltése..."
 
-#: stt_engine.py:735
+#: stt_engine.py:765
 msgid "STT engine ready!"
 msgstr "Az STT motor készen áll!"
 
-#: stt_engine.py:736
+#: stt_engine.py:766
 msgid "Setup:"
 msgstr "Beállítás:"
 
-#: stt_engine.py:737
+#: stt_engine.py:767
 msgid "- Microphone: Sounddevice default input"
 msgstr "- Mikrofon: Sounddevice alapértelmezett bemenet"
 
-#: stt_engine.py:738
+#: stt_engine.py:768
 #, python-brace-format
 msgid "- Stop: {stop_option}"
 msgstr "- Leállítás: {stop_option}"
 
-#: stt_engine.py:739
+#: stt_engine.py:769
 msgid "GPIO 22 button or Ctrl+C"
 msgstr "GPIO 22 gomb vagy Ctrl+C"
 
-#: stt_engine.py:739
+#: stt_engine.py:769
 msgid "Press Ctrl+C"
 msgstr "Ctrl+C"
 
-#: stt_engine.py:742
+#: stt_engine.py:772
 #, python-brace-format
 msgid "- Mic target override: {target} - {name}"
 msgstr "- Mikrofon felülbírálva: {target} - {name}"
 
-#: stt_engine.py:745
+#: stt_engine.py:775
 #, python-brace-format
 msgid "- Language: {lang}"
 msgstr "- Nyelv: {lang}"
 
-#: stt_engine.py:745
+#: stt_engine.py:775
 msgid "auto-detect"
 msgstr "automatikus felismerés"
 
-#: stt_engine.py:747
+#: stt_engine.py:777
 #, python-brace-format
 msgid "- Also allowing: {lang} (native language code-switch)"
 msgstr "- Emellett engedélyezve: {lang} (anyanyelvi nyelvváltás)"
 
-#: stt_engine.py:752
+#: stt_engine.py:782
 msgid "0 - Voice activity detection"
 msgstr "0 - Hangaktivitás-érzékelés"
 
-#: stt_engine.py:753
+#: stt_engine.py:783
 msgid "1 - Press and hold recording"
 msgstr "1 - Nyomva tartásos felvétel"
 
-#: stt_engine.py:755
+#: stt_engine.py:785
 msgid "Please select an input method: "
 msgstr "Válassz egy bemeneti módszert: "
 
-#: stt_engine.py:758
+#: stt_engine.py:788
 msgid "Error! Please select a valid input method!"
 msgstr "Hiba! Válassz egy érvényes bemeneti módszert!"
 
-#: stt_engine.py:760
+#: stt_engine.py:790
 msgid ""
 "\n"
 "Listening for speech...\n"
@@ -297,7 +316,7 @@ msgstr ""
 "\n"
 "Beszéd hallgatása...\n"
 
-#: stt_engine.py:767 stt_engine.py:795
+#: stt_engine.py:797 stt_engine.py:825
 msgid ""
 "\n"
 "Stop button pressed"
@@ -305,20 +324,20 @@ msgstr ""
 "\n"
 "Leállító gomb megnyomva"
 
-#: stt_engine.py:776 stt_engine.py:805
+#: stt_engine.py:806 stt_engine.py:835
 #, python-brace-format
 msgid "You said: \"{text}\""
 msgstr "Ezt mondtad: \"{text}\""
 
-#: stt_engine.py:778 stt_engine.py:808
+#: stt_engine.py:808 stt_engine.py:838
 msgid "No speech detected in the captured audio\n"
 msgstr "Nem érzékelhető beszéd a rögzített hangban\n"
 
-#: stt_engine.py:780
+#: stt_engine.py:810
 msgid "No speech detected.\n"
 msgstr "Nem érzékelhető beszéd.\n"
 
-#: stt_engine.py:783 stt_engine.py:812
+#: stt_engine.py:813 stt_engine.py:842
 msgid ""
 "\n"
 "\n"
@@ -328,7 +347,7 @@ msgstr ""
 "\n"
 "Felhasználó által megszakítva"
 
-#: stt_engine.py:788 stt_engine.py:816
+#: stt_engine.py:818 stt_engine.py:846
 msgid ""
 "\n"
 "Bye!"
@@ -336,10 +355,17 @@ msgstr ""
 "\n"
 "Viszlát!"
 
-#: stt_engine.py:806
+#: stt_engine.py:836
 msgid "Listening...\n"
 msgstr "Hallgatás...\n"
 
-#: stt_engine.py:810
+#: stt_engine.py:840
 msgid "No speech detected, still listening...\n"
 msgstr "Nem érzékelhető beszéd, továbbra is hallgat...\n"
+
+#~ msgid "Available audio devices:"
+#~ msgstr "Elérhető audioeszközök:"
+
+#, python-brace-format
+#~ msgid "Default output: {name}"
+#~ msgstr "Alapértelmezett kimenet: {name}"
