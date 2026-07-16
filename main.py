@@ -5,6 +5,7 @@ import logging
 import gettext
 from datetime import datetime
 from pathlib import Path
+from typing import Optional
 import colors
 import languages
 import settings
@@ -92,10 +93,11 @@ RECAP_TURNS = 3  # prior exchanges carried into the next session's system prompt
 
 SUMMARY_MARKER = "\nSummary:\n"
 
-_transcript_path = None
+_transcript_path: Optional[Path] = None
 
 
 def _shutdown_handler(sig, frame):
+    logger.debug(f"Signal received: {sig}, {frame} ")
     print(_("\n\nEnding the session..."))
     sys.exit(0)
 
@@ -186,7 +188,7 @@ def _prompt_use_saved_settings(saved):
 def _choose_settings():
     """Return this session's language/level/native-language/mic/playback
     picks, either reused from config.ini (if the user opts in) or gathered
-    via the interactive pickers -- saving the outcome back to config.ini
+    via the interactive pickers. saving the outcome back to config.ini
     whenever the pickers are used, so next run has something to offer."""
     saved = settings.load()
     if saved and saved["language"] not in languages.AVAILABLE_LANGUAGES:
@@ -246,6 +248,7 @@ def converse():
     return True
 
 
+# noinspection PyBroadException
 def main():
     global RAG_ENABLED, LANGUAGE_NAME, LANG_PROFILE, LANGUAGE, OCR_LANG
     args = sys.argv[1:]
@@ -362,7 +365,7 @@ def main():
     finally:
         # Runs on every exit path -- normal Ctrl+C (via _shutdown_handler's
         # sys.exit, which SystemExit skips right past `except Exception` to
-        # reach here) as well as a crash from the loop above -- so a turn
+        # reach here) as well as a crash from the loop above. so a turn
         # going wrong never silently drops the session summary/recap.
         _finalize_transcript()
 

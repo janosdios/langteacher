@@ -167,8 +167,7 @@ def set_native_lang_target(target):
 
 # If neither the target nor the native language clears this probability on
 # Whisper's own language detection, assume the audio is target-language
-# speech that was just too quiet/short/noisy for confident detection, rather
-# than trusting a low-confidence pick between the two.
+# speech that was just too quiet/short/noisy for confident detection.
 LANG_DETECT_MIN_PROB = 0.3
 
 def _detect_constrained_language(whisper_model, audio_path, allowed, fallback):
@@ -185,6 +184,7 @@ def _detect_constrained_language(whisper_model, audio_path, allowed, fallback):
     return best
 
 # Raspberry Pi GPIO button handling, if exists
+# noinspection PyBroadException
 def _create_stop_button():
     if not GPIO_AVAILABLE:
         return None
@@ -207,6 +207,7 @@ def stop_button_handle():
         _stop_button_initialized = True
     return _stop_button
 
+# noinspection PyBroadException
 def _select_compute_backend():
     """Return ("cuda", "float16") if a CUDA GPU is available via ctranslate2, else ("cpu", "int8")."""
     try:
@@ -321,6 +322,7 @@ def _begin_capture(status_message):
     frame_samples = int(rate * AUDIO_FRAME_MS / 1000)
     return stream, rate, channels, first_chunk, frame_samples, 2
 
+# noinspection PyBroadException
 def capture_until_silence(timeout_seconds=30, stop_button=None):
     """Record audio until trailing silence is detected. Returns (bytes, rate, channels) or (None, None, None)."""
     opened = _begin_capture(_("Listening... (speak now)"))
@@ -421,6 +423,7 @@ def capture_until_silence(timeout_seconds=30, stop_button=None):
 
 SPINNER_CHARS = "-\\|/"
 
+# noinspection PyBroadException
 def capture_while_key_held(key=PTT_KEY, timeout_seconds=30, stop_button=None):
     """Record audio while `key` is held down (push-to-talk). Returns (bytes, rate, channels) or (None, None, None)."""
     status_message = _("Hold {key} down to record, release to stop...").format(key=get_ptt_key_name())
@@ -571,6 +574,7 @@ def run_transcription(whisper_model, audio_path):
         logger.error(f"Transcription error: {e}")
         return None
 
+# noinspection PyBroadException
 def capture_fixed_duration(seconds=3, stop_button=None):
     opened = _begin_capture(_("Recording ~{seconds}s for test...").format(seconds=seconds))
     if opened is None:
@@ -618,6 +622,7 @@ def select_mic_target():
         print(_("Error! Please select a valid input device!"))
     return selected_mic
 
+# noinspection PyBroadException
 def get_mic_target_name(target):
     """Return the device name for a mic device index (e.g. one loaded from
     settings.py), or a placeholder if that index no longer exists -- devices
@@ -650,7 +655,7 @@ def record_speech(method="vad"):
 
 # ===== Main =====
 
-
+# noinspection PyBroadException
 def main():
 
     global MIC_DEVICE_TARGET, LANG_TARGET, NATIVE_LANG_TARGET
@@ -687,6 +692,7 @@ def main():
             print(_("Usage: --native-lang-target <language-code>"))
 
     def shutdown_handler(sig, frame):
+        logger.debug(f"Signal received: {sig}, {frame} ")
         print(_("\n\nShutting down..."))
         sys.exit(0)
 

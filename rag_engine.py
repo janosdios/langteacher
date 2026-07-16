@@ -39,6 +39,7 @@ def set_embed_server_target(host, port=None):
         EMBED_PORT = str(port)
 
 def _embed_base_url():
+    # noinspection HttpUrlsUsage
     return f"http://{EMBED_HOST}:{EMBED_PORT}"
 
 _session = None
@@ -158,7 +159,7 @@ def _split_into_chunks(text, size=CHUNK_SIZE, overlap=CHUNK_OVERLAP):
     return chunks
 
 # Scanned-book fallback: pages with less than this much embedded text are
-# treated as image-only and OCR'd via the tesseract CLI instead. Requires
+# treated as image-only and OCR via the tesseract CLI instead. Requires
 # `tesseract` on PATH with the target language pack installed
 # (e.g. `brew install tesseract-lang` for `deu`).
 OCR_LANG = os.environ.get("OCR_LANG", "deu")
@@ -198,7 +199,7 @@ def _ocr_page(page, page_number):
 def _extract_pdf_text(path, page_start=None, page_end=None):
     """Extract text from `path`. Pages are 1-indexed and inclusive; omit both
     to read the whole document. Pages with no real embedded text layer
-    (scanned PDFs) are OCR'd via tesseract as a fallback."""
+    (scanned PDFs) are OCR via tesseract as a fallback."""
     doc = pdfium.PdfDocument(path)
     start = (page_start - 1) if page_start else 0
     end = page_end if page_end else len(doc)

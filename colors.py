@@ -3,6 +3,7 @@ import os
 import sys
 
 
+# noinspection PyBroadException
 def _supports_color():
     if os.environ.get("NO_COLOR") is not None:
         return False
@@ -12,6 +13,7 @@ def _supports_color():
         try:
             import ctypes
             kernel32 = ctypes.windll.kernel32
+            # noinspection PyUnresolvedReferences
             kernel32.SetConsoleMode(kernel32.GetStdHandle(-11), 7)
         except Exception:
             return False

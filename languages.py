@@ -111,12 +111,12 @@ AVAILABLE_LANGUAGES = list(LANGUAGES.keys())
 DEFAULT_LANGUAGE = "german"
 
 # Student-level defaults: independent of which language is being learned, so
-# they live here as flat constants rather than inside each LANGUAGES entry.
+# they live here as flat constants rather than inside each LANGUAGE entry.
 NATIVE_LANGUAGE = "English"
 
 # Shortlist for select_native_language()'s numbered menu -- not the full set
 # of possible native languages (see _iso639_name_lookup() below, backed by
-# the iso639-lang package, for validating a free-typed "Other" language),
+# the iso639-lang package, for validating a free-typed "Other" language).
 # just the ones common enough to deserve a one-keypress option before "Other".
 COMMON_NATIVE_LANGUAGES = [
     "English", "Spanish", "German", "French", "Portuguese",
@@ -128,6 +128,7 @@ CEFR_LEVELS = ["A1", "A2", "B1", "B2", "C1", "C2"]
 TEACHER_LEVEL = "B1"  # CEFR scale
 
 
+# noinspection PyBroadException
 def native_language_code(name):
     """Return the ISO 639-1 code (e.g. "en") Whisper expects for a native
     language name as returned by select_native_language(), or None if that

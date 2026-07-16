@@ -5,6 +5,7 @@ import requests
 import colors
 import languages
 from pathlib import Path
+from typing import Optional
 
 LOGS_DIR = Path(__file__).resolve().parent / "logs"
 LOGS_DIR.mkdir(exist_ok=True)
@@ -59,6 +60,7 @@ def set_server_target(host, port=None):
         LLAMACPP_PORT = str(port)
 
 def _base_url():
+    # noinspection HttpUrlsUsage
     return f"http://{LLAMACPP_HOST}:{LLAMACPP_PORT}"
 
 REQUEST_TIMEOUT = float(os.environ.get("LLAMACPP_TIMEOUT", 60))
@@ -105,7 +107,7 @@ TUTOR_NAME = os.environ.get("TUTOR_NAME", _DEFAULT_PROFILE["tutor_name"])
 # Short recap of the previous session's transcript, set once at startup (see
 # main.py) so the tutor has continuity across restarts without carrying the
 # full prior conversation in every request.
-LAST_SESSION_RECAP = None
+LAST_SESSION_RECAP: Optional[str] = None
 
 def set_target_language(language):
     global TARGET_LANGUAGE
@@ -123,7 +125,7 @@ def set_tutor_name(name):
     global TUTOR_NAME
     TUTOR_NAME = name
 
-def set_last_session_recap(recap):
+def set_last_session_recap(recap: Optional[str]):
     global LAST_SESSION_RECAP
     LAST_SESSION_RECAP = recap
 
@@ -282,7 +284,7 @@ def generate_reply_stream(user_text, context_chunks=None):
         # Decode raw bytes ourselves instead of iter_lines(decode_unicode=True):
         # that flag decodes using resp.encoding, which requests defaults to
         # Latin-1 for text/event-stream responses lacking an explicit charset,
-        # mangling any multi-byte UTF-8 text (e.g. German umlauts/eszett).
+        # mangling any multibyte UTF-8 text (e.g. German umlauts/eszett).
         for raw_line in resp.iter_lines():
             if not raw_line:
                 continue

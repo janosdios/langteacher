@@ -80,6 +80,7 @@ def set_tts_engine(engine):
     _tts_model = None
     _tts_model_engine = None
 
+# noinspection PyBroadException
 def _resolve_engine(requested):
     """Resolve TTS_ENGINE ("omnivoice"/"piper"/"auto") to a concrete backend name."""
     if requested and requested.lower() != "auto":
@@ -269,6 +270,7 @@ def select_playback_target():
         print(_("Error! Please select a valid output device!"))
     return selected_playback
 
+# noinspection PyBroadException
 def get_playback_target_name(target):
     """Return the device name for a playback device index (e.g. one loaded
     from settings.py), or a placeholder if that index no longer exists --
@@ -434,7 +436,7 @@ def speak_text(text):
 
 # ===== Main =====
 
-
+# noinspection PyBroadException
 def main():
 
     global PLAYBACK_TARGET, LANG_TARGET, INSTRUCT_TARGET, REF_AUDIO_TARGET, REF_TEXT_TARGET, PIPER_VOICE_TARGET
@@ -502,17 +504,18 @@ def main():
             PIPER_VOICE_TARGET = lang_profile.get("piper_voice", "")
 
     # --instruct without an explicit --ref-audio means the user wants a
-    # generated (designed) voice, not a cloned one -- but REF_AUDIO_TARGET
+    # generated (designed) voice, not a cloned one. but REF_AUDIO_TARGET
     # always has a non-empty default (env var, or DEFAULT_LANGUAGE's profile,
     # or the --lang-target sync above), and synthesize_speech() only falls
-    # back to INSTRUCT_TARGET when there's no reference audio to clone (see
-    # its "Voice clone and voice design are separate modes" comment). So
+    # back to INSTRUCT_TARGET when there's no reference audio to clone. see
+    # its "Voice clone and voice design are separate modes" comment. So
     # clear it here, otherwise --instruct is silently ignored in favor of
     # whatever reference voice happened to be set.
     if "--instruct" in args and "--ref-audio" not in args:
         REF_AUDIO_TARGET = ""
 
     def shutdown_handler(sig, frame):
+        logger.debug(f"Signal received: {sig}, {frame} ")
         print(_("\n\nShutting down..."))
         sys.exit(0)
 
@@ -566,7 +569,7 @@ def main():
             sys.exit(0)
 
     print(_("Loading voice model..."))
-    model = get_tts_model()
+    get_tts_model()
 
     print(_("TTS engine ready!"))
     print(_("Setup:"))
