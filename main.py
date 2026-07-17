@@ -108,9 +108,10 @@ def _start_transcript():
     global _transcript_path
     TRANSCRIPTS_DIR.mkdir(parents=True, exist_ok=True)
     now = datetime.now()
-    _transcript_path = TRANSCRIPTS_DIR / f"{now.strftime('%Y-%m-%d_%H%M%S')}_{LANGUAGE}_{llm_engine.TEACHER_LEVEL}.txt"
+    _transcript_path = TRANSCRIPTS_DIR / f"{now.strftime('%Y-%m-%d_%H%M%S')}_{settings.HOSTNAME}_{LANGUAGE}_{llm_engine.TEACHER_LEVEL}.txt"
     header = (
         f"Session: {now.strftime('%Y-%m-%d %H:%M:%S')}\n"
+        f"Machine: {settings.HOSTNAME}\n"
         f"Language: {LANGUAGE}\n"
         f"Level: {llm_engine.TEACHER_LEVEL}\n\n"
     )

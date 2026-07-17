@@ -16,8 +16,8 @@ import platform
 import re
 from pathlib import Path
 
-_HOSTNAME = re.sub(r"[^A-Za-z0-9._-]", "_", platform.node() or "default")
-SETTINGS_PATH = Path(__file__).resolve().parent / f"config.{_HOSTNAME}.ini"
+HOSTNAME = re.sub(r"[^A-Za-z0-9._-]", "_", platform.node() or "default")
+SETTINGS_PATH = Path(__file__).resolve().parent / f"config.{HOSTNAME}.ini"
 
 _SECTION = "langteacher"
 
