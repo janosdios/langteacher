@@ -1,0 +1,9 @@
+numpy
+sounddevice
+faster-whisper
+pynput
+soundfile
+requests
+sqlite-vec
+pypdfium2
+iso639-lang

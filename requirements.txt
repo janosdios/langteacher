@@ -1,13 +1,5 @@
-numpy
-sounddevice
-faster-whisper
-pynput
-soundfile
-gpiozero
+-r requirements-base.txt
+gpiozero; platform_machine == "armv7l" or platform_machine == "aarch64"
 torch
 omnivoice
 piper-tts
-requests
-sqlite-vec
-pypdfium2
-iso639-lang

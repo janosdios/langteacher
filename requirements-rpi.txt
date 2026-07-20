@@ -1,0 +1,5 @@
+# Lighter install for Raspberry Pi: skips torch/omnivoice (heavy, not
+# needed since the Piper TTS backend is CPU-only and torch-free).
+-r requirements-base.txt
+gpiozero
+piper-tts

@@ -108,6 +108,14 @@ Install the dependencies into that environment:
 pip install -r requirements.txt
 ```
 
+On a Raspberry Pi, use `requirements-rpi.txt` instead — it skips `torch` and
+`omnivoice` (unneeded there since the [Piper TTS backend](#optional-piper-tts-backend-recommended-for-a-raspberry-pi)
+is CPU-only and torch-free):
+
+```bash
+pip install -r requirements-rpi.txt
+```
+
 Start your llama.cpp chat server for the tutor LLM. Any chat-capable GGUF model
 works; `Qwen3.5-9B-Q5_K_M.gguf` is a good default:
 
