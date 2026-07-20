@@ -39,7 +39,7 @@ _ = _translation.gettext
 # since it doesn't propagate to the root logger.
 logger = logging.getLogger("llm_engine")
 if not logger.handlers:
-    _handler = logging.FileHandler(LOGS_DIR / "llm_engine.log")
+    _handler = logging.FileHandler(LOGS_DIR / "llm_engine.log", encoding="utf-8")
     _handler.setFormatter(logging.Formatter("%(asctime)s %(levelname)s [llm_engine] %(message)s"))
     logger.addHandler(_handler)
     logger.propagate = False

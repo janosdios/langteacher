@@ -30,7 +30,7 @@ def load():
     if not SETTINGS_PATH.is_file():
         return None
     parser = configparser.ConfigParser()
-    parser.read(SETTINGS_PATH)
+    parser.read(SETTINGS_PATH, encoding="utf-8")
     if _SECTION not in parser:
         return None
     section = parser[_SECTION]
