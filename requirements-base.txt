@@ -7,3 +7,5 @@ requests
 sqlite-vec
 pypdfium2
 iso639-lang
+pydub
+audioop-lts; python_version >= "3.13"

@@ -13,9 +13,11 @@ import signal
 import logging
 import gettext
 import io
+import time
 import wave
 from pathlib import Path
 import tempfile
+import numpy as np
 import sounddevice as sd
 import soundfile as sf
 import languages
@@ -410,12 +412,49 @@ def save_wav(audio, filepath, sample_rate):
     sf.write(str(filepath), audio, sample_rate)
     logger.debug(f"Audio saved to {filepath.resolve()}")
 
+def _resample_for_device(audio, sample_rate, device):
+    """Resample `audio` to the output device's native rate if they differ.
+
+    CoreAudio/WASAPI/PulseAudio transparently resample on playback, but some
+    ALSA output devices (e.g. a Raspberry Pi's default hw device) don't --
+    they just play the samples at the wrong rate, changing speed and pitch.
+    Doing the conversion ourselves fixes that and is a no-op everywhere the
+    rates already match.
+    """
+    try:
+        info = sd.query_devices(device=device) if device is not None else sd.query_devices(kind="output")
+        device_rate = int(round(info["default_samplerate"]))
+    except Exception as e:
+        logger.warning(f"Could not query output device sample rate, skipping resample check: {e}")
+        return audio, sample_rate
+    if device_rate == sample_rate:
+        return audio, sample_rate
+
+    from pydub import AudioSegment
+    start = time.perf_counter()
+    channels = 1 if audio.ndim == 1 else audio.shape[1]
+    pcm16 = (np.clip(audio, -1.0, 1.0) * 32767).astype(np.int16)
+    segment = AudioSegment(pcm16.tobytes(), frame_rate=sample_rate, sample_width=2, channels=channels)
+    segment = segment.set_frame_rate(device_rate)
+    resampled = np.frombuffer(segment.raw_data, dtype=np.int16).astype(np.float32) / 32767
+    if channels > 1:
+        resampled = resampled.reshape(-1, channels)
+    elapsed_ms = (time.perf_counter() - start) * 1000
+    audio_duration_ms = len(audio) / sample_rate * 1000
+    logger.debug(
+        f"Resampled audio {sample_rate} Hz -> {device_rate} Hz "
+        f"({audio_duration_ms:.0f} ms of audio) in {elapsed_ms:.1f} ms"
+    )
+    return resampled, device_rate
+
 def play_audio(audio, sample_rate, device=None):
     try:
+        audio, sample_rate = _resample_for_device(audio, sample_rate, device)
         sd.play(audio, sample_rate, device=device)
         sd.wait()
     except Exception as e:
         logger.error(f"Playback error: {e}")
+        raise
 
 def speak_text(text):
     """Synthesize `text` and play it back on PLAYBACK_TARGET (or the default output device)."""
