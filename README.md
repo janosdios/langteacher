@@ -227,12 +227,14 @@ language/mic/playback device are picked interactively on first run (or reused fr
 | Flag | Purpose |
 |---|---|
 | `--mic-device <id-or-name>` | Force a specific input device (env `MIC_DEVICE_TARGET`, default: auto) |
+| `--playback-target <id-or-name>` | Force a specific output device for `--test` playback (env `PLAYBACK_TARGET`, default: auto) |
 | `--lang-target <language-code>` | Force a specific transcription language (default: auto-detect) |
 | `--native-lang-target <language-code>` | Also allow this language, for code-switching to ask for help |
 | `--whisper-model <name-or-path>` | Whisper model for transcription (env `WHISPER_MODEL`, default `small`) |
 | `--list-devices` | Show all available audio input/output devices |
 | `--test` | Record ~3s and play it back (quick audio sanity check) |
 | `--ui-lang <language-code>` | Language for this CLI's own text (env `UI_LANGUAGE`, default: system locale) |
+| `--debug` | Enable debug-level logging to `logs/stt_engine.log` |
 
 ### `tts_engine.py`
 
