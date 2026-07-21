@@ -422,8 +422,6 @@ def capture_until_silence(timeout_seconds=30, stop_button=None):
                     speech_ms = AUDIO_FRAME_MS
                     silence_ms = 0
                     audio_buffer.extend(chunk)
-                    print(_("\nSpeech detected!"))
-
             total_ms += AUDIO_FRAME_MS
 
     except KeyboardInterrupt:
