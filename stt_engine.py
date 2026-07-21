@@ -2,8 +2,6 @@ import os, sys, platform
 import time
 import signal
 import wave
-import shutil
-import subprocess
 import tempfile
 import threading
 import logging
@@ -140,12 +138,11 @@ TEMP_DIR = Path(tempfile.gettempdir())
 TEMP_WAV = TEMP_DIR / "recording.wav"
 TEST_WAV = TEMP_DIR / "test.wav"
 
-# External apps to play wav
-PLAY_MAC = "afplay"
-PLAY_LINUX = "aplay"
-
 # Optional: force a specific audio input device (sounddevice index or name substring)
 MIC_DEVICE_TARGET = os.environ.get("MIC_DEVICE_TARGET")
+
+# Optional: force a specific audio output device for --test playback (sounddevice index or name substring)
+PLAYBACK_TARGET = os.environ.get("PLAYBACK_TARGET")
 
 def set_mic_target(target):
     """Override MIC_DEVICE_TARGET at runtime (e.g. from an interactive picker in another module)."""
@@ -274,6 +271,21 @@ def _resolve_device_index(target):
             if target.lower() in d['name'].lower() and d['max_input_channels'] > 0:
                 return i
     logger.warning(f"Could not find mic device '{target}', using default.")
+    return None
+
+def _resolve_output_device_index(target):
+    """Turn PLAYBACK_TARGET (an index, a name substring, or None) into a
+    sounddevice output device index, or None to let sounddevice pick the default."""
+    if target is None:
+        return None
+    try:
+        return int(target)
+    except (ValueError, TypeError):
+        devices = sd.query_devices()
+        for i, d in enumerate(devices):
+            if target.lower() in d['name'].lower() and d['max_output_channels'] > 0:
+                return i
+    logger.warning(f"Could not find playback device '{target}', using default.")
     return None
 
 def _open_capture_stream(target):
@@ -508,20 +520,50 @@ def capture_while_key_held(key=PTT_KEY, timeout_seconds=30, stop_button=None):
         return bytes(audio_buffer), rate, channels
     return None, None, None
 
-def playback_wav(path):
-    path = str(path)
-    if platform.system() == "Windows":
-        import winsound
-        winsound.PlaySound(path, winsound.SND_FILENAME)
-        return
-    # noinspection PyDeprecation
-    if shutil.which(PLAY_MAC):      # macOS
-        subprocess.run([PLAY_MAC, path], check=False)
-    # noinspection PyDeprecation
-    elif shutil.which(PLAY_LINUX):     # Raspberry Pi / Linux
-        subprocess.run([PLAY_LINUX, path], check=False)
-    else:
-        logger.warning("No audio playback command found")
+def _resample_for_device(frames, rate, channels, device):
+    """Resample raw 16-bit PCM `frames` to the output device's native rate if
+    they differ. Some ALSA output devices (e.g. a Raspberry Pi's default hw
+    device) don't resample on their own, unlike CoreAudio/WASAPI/PulseAudio --
+    playing audio at the wrong rate either crashes with paInvalidSampleRate or
+    changes speed/pitch."""
+    try:
+        info = sd.query_devices(device=device) if device is not None else sd.query_devices(kind="output")
+        device_rate = int(round(info["default_samplerate"]))
+    except Exception as e:
+        logger.warning(f"Could not query output device sample rate, skipping resample check: {e}")
+        return frames, rate
+    if device_rate == rate:
+        return frames, rate
+
+    from pydub import AudioSegment
+    start = time.perf_counter()
+    segment = AudioSegment(frames, frame_rate=rate, sample_width=2, channels=channels)
+    segment = segment.set_frame_rate(device_rate)
+    elapsed_ms = (time.perf_counter() - start) * 1000
+    audio_duration_ms = len(frames) / 2 / channels / rate * 1000
+    logger.debug(
+        f"Resampled audio {rate} Hz -> {device_rate} Hz "
+        f"({audio_duration_ms:.0f} ms of audio) in {elapsed_ms:.1f} ms"
+    )
+    return segment.raw_data, device_rate
+
+def playback_wav(path, device=None):
+    """Play a WAV file through sounddevice, honoring `device` -- unlike shelling
+    out to aplay/afplay/winsound, this way we can target a specific output
+    device (e.g. a USB speaker) instead of whatever the OS default happens to be."""
+    with wave.open(str(path), 'rb') as wf:
+        channels = wf.getnchannels()
+        rate = wf.getframerate()
+        frames = wf.readframes(wf.getnframes())
+    frames, rate = _resample_for_device(frames, rate, channels, device)
+    audio = np.frombuffer(frames, dtype=np.int16)
+    if channels > 1:
+        audio = audio.reshape(-1, channels)
+    try:
+        sd.play(audio, rate, device=device)
+        sd.wait()
+    except Exception as e:
+        logger.error(f"Playback error: {e}")
 
 NORMALIZE_TARGET_PEAK = 0.9
 NORMALIZE_MAX_GAIN = 10.0
@@ -674,8 +716,11 @@ def _resolve_lang_code(value):
 # noinspection PyBroadException
 def main():
 
-    global MIC_DEVICE_TARGET, LANG_TARGET, NATIVE_LANG_TARGET
+    global MIC_DEVICE_TARGET, PLAYBACK_TARGET, LANG_TARGET, NATIVE_LANG_TARGET
     args = sys.argv[1:]
+
+    if "--debug" in args:
+        logger.setLevel(logging.DEBUG)
 
     if "--ui-lang" in args:
         try:
@@ -694,6 +739,12 @@ def main():
             MIC_DEVICE_TARGET = args[args.index("--mic-device") + 1]
         except Exception:
             print(_("Usage: --mic-device <source-id-or-name>"))
+
+    if "--playback-target" in args:
+        try:
+            PLAYBACK_TARGET = args[args.index("--playback-target") + 1]
+        except Exception:
+            print(_("Usage: --playback-target <output-id-or-name>"))
 
     if "--lang-target" in args:
         try:
@@ -725,14 +776,16 @@ def main():
     if len(args) > 0:
         if "--help" in args:
             print(_("STT Engine - USB Mic"))
-            print(_("\nUsage: python3 stt_engine.py [--mic-device <id-or-name>] [--lang-target <language-code>] [--native-lang-target <language-code>] [--whisper-model <model-name-or-path>] [--test] [--list-devices] [--ui-lang <language-code>]"))
+            print(_("\nUsage: python3 stt_engine.py [--mic-device <id-or-name>] [--playback-target <id-or-name>] [--lang-target <language-code>] [--native-lang-target <language-code>] [--whisper-model <model-name-or-path>] [--test] [--list-devices] [--ui-lang <language-code>] [--debug]"))
             print(_("  --mic-device        Force a specific input device (index or name substring)"))
+            print(_("  --playback-target   Force a specific output device for --test playback (index or name substring)"))
             print(_("  --lang-target       Force a specific transcription language, e.g. en/hu (default: auto-detect)"))
             print(_("  --native-lang-target  Also allow this language (e.g. to code-switch and ask for help), picked between it and --lang-target per utterance"))
             print(_("  --whisper-model     Whisper model name or path to use for transcription (default: env WHISPER_MODEL or 'small')"))
             print(_("  --list-devices      Show all available audio input/output devices"))
             print(_("  --test           Record ~3s and play back (quick audio sanity check)"))
             print(_("  --ui-lang        Language for this CLI's own text, e.g. en/hu (default: env UI_LANGUAGE or system locale)"))
+            print(_("  --debug          Enable debug-level logging to logs/stt_engine.log"))
             sys.exit(0)
         elif "--list-devices" in args:
             hostapis = sd.query_hostapis()
@@ -744,6 +797,14 @@ def main():
             else:
                 print(_("  (none found)"))
             print(_("\nDefault input:  {name}").format(name=sd.query_devices(kind='input')['name']))
+            output_devices = [(i, d) for i, d in enumerate(sd.query_devices()) if d['max_output_channels'] > 0]
+            print(_("\nOutput devices (usable with --playback-target <index>):"))
+            if output_devices:
+                for i, d in output_devices:
+                    print(f"  {i}: {d['name']} [{hostapis[d['hostapi']]['name']}] ({d['max_output_channels']} out)")
+            else:
+                print(_("  (none found)"))
+            print(_("\nDefault output: {name}").format(name=sd.query_devices(kind='output')['name']))
             sys.exit(0)
         elif args[0] == "--test" or "--test" in args:
             stop_button = stop_button_handle()
@@ -754,7 +815,7 @@ def main():
             out = TEST_WAV
             write_wav(data, out, sample_rate=rate, channels=ch)
             print(_("Playing back test recording..."))
-            playback_wav(out)
+            playback_wav(out, device=_resolve_output_device_index(PLAYBACK_TARGET))
             print(_("Audio test complete!"))
             sys.exit(0)
 
