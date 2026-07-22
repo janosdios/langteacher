@@ -323,12 +323,18 @@ def summarize_session(transcript_text):
     vocab_instruction = (
         "notable vocabulary used. For vocabulary, list only "
         "ordinary words worth reviewing (nouns, verbs, adjectives, "
-        "idioms) and include each noun's article or grammatical "
-        f"gender marker if {TARGET_LANGUAGE} has one"
+        "idioms). If, and only if, "
+        f"{TARGET_LANGUAGE} has grammatical gender, include each noun's "
+        "article or gender marker (skip this for languages without "
+        "grammatical gender, such as Hungarian or Finnish)."
     )
     if NATIVE_LANGUAGE:
-        vocab_instruction += f", followed by its {NATIVE_LANGUAGE} translation"
-    vocab_instruction += ". Never include "
+        vocab_instruction += (
+            f" Regardless of gender, every single vocabulary item must be "
+            f"immediately followed by its {NATIVE_LANGUAGE} translation, "
+            "with no exceptions."
+        )
+    vocab_instruction += " Never include "
 
     messages = [
         {
