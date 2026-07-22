@@ -78,7 +78,7 @@ LOGS_DIR.mkdir(exist_ok=True)
 
 logger = logging.getLogger("langteacher")
 if not logger.handlers:
-    _handler = logging.FileHandler(LOGS_DIR / "langteacher.log", encoding="utf-8")
+    _handler = logging.FileHandler(LOGS_DIR / f"langteacher.{settings.HOSTNAME}.log", encoding="utf-8")
     _handler.setFormatter(logging.Formatter(
         '%(asctime)s - line: %(lineno)s - %(levelname)s - %(message)s'
     ))

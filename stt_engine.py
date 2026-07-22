@@ -10,6 +10,7 @@ import warnings
 import contextlib
 import colors
 import languages
+import settings
 from pathlib import Path
 from faster_whisper import WhisperModel, decode_audio
 try:
@@ -55,7 +56,7 @@ _ = _translation.gettext
 
 logger = logging.getLogger("stt_engine")
 if not logger.handlers:
-    _handler = logging.FileHandler(LOGS_DIR / "stt_engine.log", encoding="utf-8")
+    _handler = logging.FileHandler(LOGS_DIR / f"stt_engine.{settings.HOSTNAME}.log", encoding="utf-8")
     _handler.setFormatter(logging.Formatter("%(asctime)s %(levelname)s [stt_engine] %(message)s"))
     logger.addHandler(_handler)
     logger.propagate = False
