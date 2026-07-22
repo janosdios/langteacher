@@ -13,6 +13,7 @@ import stt_engine
 import tts_engine
 import llm_engine
 import rag_engine
+import version
 from stt_engine import record_speech
 
 # Translates this module's own CLI-facing strings (--help banner, startup/
@@ -254,6 +255,10 @@ def main():
     global RAG_ENABLED, LANGUAGE_NAME, LANG_PROFILE, LANGUAGE, OCR_LANG
     args = sys.argv[1:]
 
+    if "--version" in args:
+        print(f"LangTeacher {version.__version__}")
+        return
+
     if "--ui-lang" in args:
         try:
             set_ui_language(args[args.index("--ui-lang") + 1])
@@ -292,7 +297,8 @@ def main():
 
     if "--help" in args:
         print(_("LangTeacher - voice-based language tutor"))
-        print(_("\nUsage: python3 main.py [--no-recap] [--whisper-model <model-name-or-path>] [--tts-engine <omnivoice|piper|auto>] [--tutor-host <ip-or-hostname>] [--tutor-port <port>] [--rag-host <ip-or-hostname>] [--rag-port <port>] [--ui-lang <language-code>]"))
+        print(_("\nUsage: python3 main.py [--version] [--no-recap] [--whisper-model <model-name-or-path>] [--tts-engine <omnivoice|piper|auto>] [--tutor-host <ip-or-hostname>] [--tutor-port <port>] [--rag-host <ip-or-hostname>] [--rag-port <port>] [--ui-lang <language-code>]"))
+        print(_("  --version        Print the installed version and exit"))
         print(_("  --no-recap       Start with a clean slate, ignoring any previous session's recap"))
         print(_("  --whisper-model  Whisper model name or path to use for transcription (default: env WHISPER_MODEL or 'small'); pick according to platform/language, e.g. a smaller model on a Raspberry Pi or a language-specific fine-tune"))
         print(_("  --tts-engine     TTS backend to use: omnivoice (voice cloning/design), piper (lightweight, e.g. for a Raspberry Pi), or auto (default: env TTS_ENGINE or 'auto')"))
@@ -303,7 +309,7 @@ def main():
         print(_("  --ui-lang        Language for this CLI's own text, e.g. en/hu (default: env UI_LANGUAGE or system locale)"))
         return
 
-    logger.info('LangTeacher started.')
+    logger.info(f'LangTeacher {version.__version__} started.')
     signal.signal(signal.SIGINT, _shutdown_handler)
     signal.signal(signal.SIGTERM, _shutdown_handler)
 
