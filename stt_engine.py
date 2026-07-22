@@ -6,6 +6,8 @@ import tempfile
 import threading
 import logging
 import gettext
+import warnings
+import contextlib
 import colors
 import languages
 from pathlib import Path
@@ -192,7 +194,15 @@ def _create_stop_button():
     if not GPIO_AVAILABLE:
         return None
     try:
-        button = Button(STOP_BUTTON_GPIO_PIN, pull_up=True, bounce_time=0.1)
+        # gpiozero picks its pin factory lazily, on this first Device
+        # instantiation rather than on import -- it probes lgpio/RPi.GPIO/
+        # pigpio/native in turn and warns on each rejected one before
+        # settling on whatever works. That's expected here, not an error
+        # (none of the real backends are usable without root/the native
+        # kernel driver on this Pi), so it shouldn't spam the console.
+        with warnings.catch_warnings():
+            warnings.filterwarnings("ignore", module="gpiozero")
+            button = Button(STOP_BUTTON_GPIO_PIN, pull_up=True, bounce_time=0.1)
         logger.info(f"Stop button ready on GPIO {STOP_BUTTON_GPIO_PIN}")
         return button
     except Exception:
@@ -288,6 +298,25 @@ def _resolve_output_device_index(target):
     logger.warning(f"Could not find playback device '{target}', using default.")
     return None
 
+@contextlib.contextmanager
+def _suppress_alsa_errors():
+    """PortAudio's ALSA backend writes rejected-format errors (e.g.
+    'paInvalidSampleRate') straight to the process's stderr file descriptor
+    from C, bypassing Python's logging/warnings entirely -- so it can't be
+    caught or filtered from the Python side. Since the fallback loop below
+    is expected to hit rejections on the way to a working format, redirect
+    fd 2 to /dev/null for the duration rather than let PortAudio spam a
+    message the user can't act on."""
+    stderr_fd = sys.stderr.fileno()
+    saved_fd = os.dup(stderr_fd)
+    try:
+        with open(os.devnull, "w") as devnull:
+            os.dup2(devnull.fileno(), stderr_fd)
+        yield
+    finally:
+        os.dup2(saved_fd, stderr_fd)
+        os.close(saved_fd)
+
 def _open_capture_stream(target):
     """Open a sounddevice RawInputStream for `target`, working down a list of
     (rate, channels) fallbacks until one is accepted -- some USB mics reject
@@ -303,14 +332,15 @@ def _open_capture_stream(target):
     for rate, channels in fallback_formats:
         frame_samples = int(rate * AUDIO_FRAME_MS / 1000)
         try:
-            stream = sd.RawInputStream(
-                samplerate=rate,
-                channels=channels,
-                dtype='int16',
-                device=device,
-                blocksize=frame_samples
-            )
-            stream.start()
+            with _suppress_alsa_errors():
+                stream = sd.RawInputStream(
+                    samplerate=rate,
+                    channels=channels,
+                    dtype='int16',
+                    device=device,
+                    blocksize=frame_samples
+                )
+                stream.start()
             raw_chunk, _overflowed = stream.read(frame_samples)
             chunk = bytes(raw_chunk)
             if chunk:

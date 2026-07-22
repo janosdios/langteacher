@@ -65,6 +65,12 @@ logger.setLevel(logging.INFO)
 
 logger.info(f"Platform: {platform.system()}, {platform.platform()}")
 
+# piper logs "Missing phoneme from id map: <char>" (via Python logging, not a
+# raised error) for every diacritic/combining mark its phoneme set doesn't
+# cover -- it just skips that phoneme and carries on. Harmless per occurrence
+# but noisy on text with several such marks, so keep it out of the console.
+logging.getLogger("piper").setLevel(logging.ERROR)
+
 # TTS model (HuggingFace repo id or local checkpoint path)
 OMNIVOICE_MODEL = os.environ.get("OMNIVOICE_MODEL", "k2-fsa/OmniVoice")
 
