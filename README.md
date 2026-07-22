@@ -184,6 +184,17 @@ which picks Piper automatically when a Raspberry Pi is detected), or pass
 [rhasspy/piper-voices](https://huggingface.co/rhasspy/piper-voices) if a
 download fails, since the catalog can change.
 
+### Raspberry Pi: push-to-talk requires X11
+
+Push-to-talk (holding a key to record) uses `pynput` for a global keyboard
+hook, which needs an X11 session — under Raspberry Pi OS's default Wayland
+desktop (Bookworm and later), `pynput` starts without error but silently
+never receives the key press. If holding the push-to-talk key does nothing,
+switch the Pi to X11 via `raspi-config` → *Advanced Options* → *Wayland* →
+*X11*, then reboot. Alternatively, use hands-free VAD mode instead (`0` in
+`stt_engine.py`'s interactive picker, or `RECORD_METHOD` in `main.py`), which
+doesn't depend on `pynput` at all.
+
 ### Optional: RAG knowledge base
 
 ```bash
