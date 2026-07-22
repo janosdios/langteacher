@@ -153,6 +153,15 @@ def build_system_prompt(context_chunks=None):
             f"you MUST first explain briefly in {NATIVE_LANGUAGE} (1-2 sentences), "
             f"then continue in {TARGET_LANGUAGE}."
         )
+        lines.append(
+            f"EXCEPTION to the rule above about defaulting to {TARGET_LANGUAGE}: when "
+            f"quizzing the student on vocabulary, the word or phrase being tested must be "
+            f"given in {NATIVE_LANGUAGE}, because the student's job is to produce the "
+            f"{TARGET_LANGUAGE} translation. For example, ask the equivalent of \"How do "
+            f"you say 'X' in {TARGET_LANGUAGE}?\" with X in {NATIVE_LANGUAGE} -- do NOT quote "
+            f"the {TARGET_LANGUAGE} word and ask what it is 'in {TARGET_LANGUAGE}', since "
+            f"that already states the answer and makes no sense."
+        )
     if LAST_SESSION_RECAP:
         lines.append(
             "For continuity, here is a short recap of your last session with "
