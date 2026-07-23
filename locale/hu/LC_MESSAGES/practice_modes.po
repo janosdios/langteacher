@@ -1,0 +1,61 @@
+# Hungarian translations for practice_modes.py CLI strings.
+msgid ""
+msgstr ""
+"Project-Id-Version: practice_modes\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2026-07-23 17:09+0200\n"
+"PO-Revision-Date: 2026-07-22 18:23+0200\n"
+"Last-Translator: \n"
+"Language-Team: Hungarian\n"
+"Language: hu\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+
+#: practice_modes.py:142
+msgid "Free conversation"
+msgstr "Szabad beszélgetés"
+
+#: practice_modes.py:143
+msgid "Role-play"
+msgstr "Szerepjáték"
+
+#: practice_modes.py:144
+msgid "Vocabulary quiz"
+msgstr "Szókincs kvíz"
+
+#: practice_modes.py:145
+msgid "Translation practice"
+msgstr "Fordítási gyakorlat"
+
+#: practice_modes.py:146
+msgid "Custom goal"
+msgstr "Egyéni cél"
+
+#: practice_modes.py:160
+msgid "Please select a practice mode: "
+msgstr "Válassz egy gyakorlási módot: "
+
+#: practice_modes.py:162 practice_modes.py:216
+msgid "Error! Please enter a number!"
+msgstr "Hiba! Adj meg egy számot!"
+
+#: practice_modes.py:166
+msgid "Error! Please select a valid practice mode!"
+msgstr "Hiba! Válassz egy érvényes gyakorlási módot!"
+
+#: practice_modes.py:203
+msgid ""
+"No custom goal files found in custom_goals/. Add a .md file there (see "
+"custom_goals/put_custom_goal_files_here.txt) and restart."
+msgstr ""
+"Nem található egyéni célfájl a custom_goals/ mappában. Adj hozzá egy .md "
+"fájlt (lásd custom_goals/put_custom_goal_files_here.txt), majd indítsd újra."
+
+#: practice_modes.py:214
+msgid "Please select a custom goal file: "
+msgstr "Válassz egy egyéni célfájlt: "
+
+#: practice_modes.py:220
+msgid "Error! Please select a valid file!"
+msgstr "Hiba! Válassz egy érvényes fájlt!"

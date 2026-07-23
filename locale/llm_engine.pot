@@ -1,14 +1,14 @@
 # SOME DESCRIPTIVE TITLE.
 # Copyright (C) YEAR THE PACKAGE'S COPYRIGHT HOLDER
-# This file is distributed under the same license as the PACKAGE package.
+# This file is distributed under the same license as the llm_engine package.
 # FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
 #
 #, fuzzy
 msgid ""
 msgstr ""
-"Project-Id-Version: PACKAGE VERSION\n"
+"Project-Id-Version: llm_engine\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-07-14 17:47+0200\n"
+"POT-Creation-Date: 2026-07-23 17:09+0200\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -17,91 +17,132 @@ msgstr ""
 "Content-Type: text/plain; charset=CHARSET\n"
 "Content-Transfer-Encoding: 8bit\n"
 
-#: llm_engine.py:378
+#: llm_engine.py:429
 msgid "Usage: --ui-lang <language-code>"
 msgstr ""
 
-#: llm_engine.py:381
+#: llm_engine.py:432
 msgid "LLM Engine - llama.cpp tutor client"
 msgstr ""
 
-#: llm_engine.py:382
+#: llm_engine.py:433
 msgid ""
 "\n"
 "Usage: python3 llm_engine.py [--host <ip-or-hostname>] [--port <port>] [--"
-"lang-target <language>] [--level <cefr-level>] [--ui-lang <language-code>]"
+"lang-target <language>] [--native-lang <language>] [--level <cefr-level>] [--"
+"practice-mode <mode>] [--custom-goal <filename>] [--debug] [--ui-lang "
+"<language-code>]"
 msgstr ""
 
-#: llm_engine.py:383
+#: llm_engine.py:434
 msgid ""
 "  --host          llama.cpp server host (default: env LLAMACPP_HOST or "
 "127.0.0.1)"
 msgstr ""
 
-#: llm_engine.py:384
+#: llm_engine.py:435
 msgid ""
 "  --port          llama.cpp server port (default: env LLAMACPP_PORT or 8080)"
 msgstr ""
 
-#: llm_engine.py:385
+#: llm_engine.py:436
 msgid ""
 "  --lang-target   Target language the tutor teaches (default: env "
-"TARGET_LANGUAGE or German). Also"
+"TARGET_LANGUAGE or German)"
 msgstr ""
 
-#: llm_engine.py:386
+#: llm_engine.py:437
 msgid ""
-"                  switches the tutor name to match, per languages.py, unless "
-"env TUTOR_NAME is set."
+"  --native-lang   Student's native language, for code-switch fallback and "
+"quiz/translation modes (default: env NATIVE_LANGUAGE or English)"
 msgstr ""
 
-#: llm_engine.py:387
+#: llm_engine.py:438
 msgid ""
 "  --level         Student's CEFR level, e.g. A1/A2/B1/B2 (default: env "
 "TEACHER_LEVEL or B1)"
 msgstr ""
 
-#: llm_engine.py:388
+#: llm_engine.py:439
+#, python-brace-format
+msgid "  --practice-mode Practice mode: {modes} (default: '{default_mode}')"
+msgstr ""
+
+#: llm_engine.py:443
+msgid ""
+"  --custom-goal   Filename of a .md file in custom_goals/ to use as the "
+"goal; required when --practice-mode is 'custom' (and implies it if --"
+"practice-mode is omitted)"
+msgstr ""
+
+#: llm_engine.py:444
+msgid ""
+"  --debug         Enable debug-level logging (e.g. the full tutor system "
+"prompt) to logs/llm_engine.log"
+msgstr ""
+
+#: llm_engine.py:445
 msgid ""
 "  --ui-lang       Language for this CLI's own text, e.g. en/hu (default: env "
 "UI_LANGUAGE or system locale)"
 msgstr ""
 
-#: llm_engine.py:395
+#: llm_engine.py:452
 msgid "Usage: --host <ip-or-hostname>"
 msgstr ""
 
-#: llm_engine.py:400
+#: llm_engine.py:457
 msgid "Usage: --port <port>"
 msgstr ""
 
-#: llm_engine.py:405
+#: llm_engine.py:462
 msgid "Usage: --lang-target <language>"
 msgstr ""
 
-#: llm_engine.py:420
+#: llm_engine.py:477
+msgid "Usage: --native-lang <language>"
+msgstr ""
+
+#: llm_engine.py:482
 msgid "Usage: --level <cefr-level>"
 msgstr ""
 
-#: llm_engine.py:423
+#: llm_engine.py:493
+msgid "Usage: --practice-mode <mode>"
+msgstr ""
+
+#: llm_engine.py:504
+msgid "Usage: --custom-goal <filename>"
+msgstr ""
+
+#: llm_engine.py:518
+msgid "Error: --practice-mode custom requires --custom-goal <filename>."
+msgstr ""
+
+#: llm_engine.py:522
+#, python-brace-format
+msgid "Error: custom goal file '{name}' not found in custom_goals/."
+msgstr ""
+
+#: llm_engine.py:527
 #, python-brace-format
 msgid "Could not reach llama.cpp server at {url}"
 msgstr ""
 
-#: llm_engine.py:426
+#: llm_engine.py:530
 #, python-brace-format
 msgid "Chatting with your {lang} tutor ({level}). Ctrl+C to quit.\n"
 msgstr ""
 
-#: llm_engine.py:431
+#: llm_engine.py:535
 msgid "You: "
 msgstr ""
 
-#: llm_engine.py:434
+#: llm_engine.py:538
 msgid "Tutor: "
 msgstr ""
 
-#: llm_engine.py:439
+#: llm_engine.py:543
 msgid ""
 "\n"
 "Bye!"

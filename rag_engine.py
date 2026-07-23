@@ -343,8 +343,13 @@ def main():
     for p in (ingest_p, query_p):
         p.add_argument("--embed-host", default=EMBED_HOST)
         p.add_argument("--embed-port", default=EMBED_PORT)
+        p.add_argument("--debug", action="store_true", help="Enable debug-level logging to logs/rag_engine.log")
 
     args = parser.parse_args()
+
+    if args.debug:
+        logger.setLevel(logging.DEBUG)
+
     set_embed_server_target(args.embed_host, args.embed_port)
 
     if not check_embed_server():

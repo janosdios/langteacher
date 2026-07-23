@@ -488,6 +488,9 @@ def main():
     global PLAYBACK_TARGET, LANG_TARGET, INSTRUCT_TARGET, REF_AUDIO_TARGET, REF_TEXT_TARGET, PIPER_VOICE_TARGET
     args = sys.argv[1:]
 
+    if "--debug" in args:
+        logger.setLevel(logging.DEBUG)
+
     if "--ui-lang" in args:
         try:
             set_ui_language(args[args.index("--ui-lang") + 1])
@@ -572,7 +575,7 @@ def main():
     if len(args) > 0:
         if "--help" in args:
             print(_("TTS Engine - OmniVoice / Piper"))
-            print(_("\nUsage: python3 tts_engine.py [--engine <omnivoice|piper|auto>] [--playback-target <id-or-name>] [--lang-target <language-code>] [--instruct <voice-style>] [--ref-audio <path-or-name>] [--ref-text <transcript>] [--test] [--list-devices] [--list-voices] [--ui-lang <language-code>]"))
+            print(_("\nUsage: python3 tts_engine.py [--engine <omnivoice|piper|auto>] [--playback-target <id-or-name>] [--lang-target <language-code>] [--instruct <voice-style>] [--ref-audio <path-or-name>] [--ref-text <transcript>] [--test] [--list-devices] [--list-voices] [--ui-lang <language-code>] [--debug]"))
             print(_("  --engine           TTS backend to use: omnivoice (voice cloning/design), piper (lightweight, e.g. for a Raspberry Pi), or auto (default: env TTS_ENGINE or 'auto')"))
             print(_("  --playback-target  Force a specific output device (index or name substring)"))
             print(_("  --lang-target      Force a specific synthesis language (default: auto)"))
@@ -584,6 +587,7 @@ def main():
             print(_("  --check-updates    Check the HF Hub for a newer model revision instead of using the local cache offline (omnivoice only)"))
             print(_("  --test             Synthesize and play a short built-in phrase (quick sanity check)"))
             print(_("  --ui-lang          Language for this CLI's own text, e.g. en/hu (default: env UI_LANGUAGE or system locale)"))
+            print(_("  --debug            Enable debug-level logging to logs/tts_engine.log"))
             sys.exit(0)
         elif "--list-devices" in args:
             hostapis = sd.query_hostapis()

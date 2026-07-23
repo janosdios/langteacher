@@ -28,6 +28,12 @@ transcripts/*
 !transcripts/transcripts_will_be_here.txt
 logs/
 
+# Student-authored custom practice-goal descriptions (see practice_modes.py)
+# -- personal, not project source, kept out of git so pulling an app update
+# never conflicts with or overwrites a student's own goal files.
+custom_goals/*
+!custom_goals/put_custom_goal_files_here.txt
+
 # Per-machine saved picks (see settings.py) -- language/level/mic/playback
 # choices for whoever ran the app locally, not project source. One file per
 # machine (config.<hostname>.ini), since this directory is synced across

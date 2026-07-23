@@ -8,6 +8,7 @@ from pathlib import Path
 from typing import Optional
 import colors
 import languages
+import practice_modes
 import settings
 import stt_engine
 import tts_engine
@@ -41,6 +42,7 @@ def set_ui_language(language):
     _translation = _load_translation(language)
     _ = _translation.gettext
     languages.set_ui_language(language)
+    practice_modes.set_ui_language(language)
     stt_engine.set_ui_language(language)
     tts_engine.set_ui_language(language)
     llm_engine.set_ui_language(language)
@@ -114,7 +116,8 @@ def _start_transcript():
         f"Session: {now.strftime('%Y-%m-%d %H:%M:%S')}\n"
         f"Machine: {settings.HOSTNAME}\n"
         f"Language: {LANGUAGE}\n"
-        f"Level: {llm_engine.TEACHER_LEVEL}\n\n"
+        f"Level: {llm_engine.TEACHER_LEVEL}\n"
+        f"Practice mode: {llm_engine.PRACTICE_MODE}\n\n"
     )
     _transcript_path.write_text(header, encoding="utf-8")
 
@@ -187,38 +190,64 @@ def _prompt_use_saved_settings(saved):
     return answer in ("", "y", "yes")
 
 
-def _choose_settings():
-    """Return this session's language/level/native-language/mic/playback
-    picks, either reused from config.ini (if the user opts in) or gathered
-    via the interactive pickers. saving the outcome back to config.ini
-    whenever the pickers are used, so next run has something to offer."""
+def _choose_settings(cli_practice_mode=None, cli_custom_goal_path=None):
+    """Return this session's language/level/native-language/mic/playback/
+    practice-mode picks. The first five are either reused from config.ini (if
+    the user opts in) or gathered via the interactive pickers, saving the
+    outcome back to config.ini whenever the pickers are used, so next run has
+    something to offer. The practice mode (and, for "custom", the chosen goal
+    file) is never persisted -- it's picked fresh on every single run,
+    regardless of which branch above was taken.
+
+    If `cli_practice_mode` is given (from main()'s --practice-mode flag,
+    already validated), it's used as-is and the interactive practice-mode
+    picker below is skipped entirely -- asking again would be redundant since
+    the choice was already made on the command line."""
     saved = settings.load()
     if saved and saved["language"] not in languages.AVAILABLE_LANGUAGES:
         saved = None  # stale/invalid entry, e.g. from a removed language profile
 
     if saved and _prompt_use_saved_settings(saved):
-        return saved
+        picks = dict(saved)
+    else:
+        print(_("Which language would you like to learn?"))
+        language = languages.select_language()
 
-    print(_("Which language would you like to learn?"))
-    language = languages.select_language()
+        print(_("What's your CEFR level?"))
+        cefr_level = languages.select_teacher_level()
 
-    print(_("What's your CEFR level?"))
-    cefr_level = languages.select_teacher_level()
+        print(_("What's your native language?"))
+        native_language = languages.select_native_language()
 
-    print(_("What's your native language?"))
-    native_language = languages.select_native_language()
+        mic_target = stt_engine.select_mic_target()
+        playback_target = tts_engine.select_playback_target()
 
-    mic_target = stt_engine.select_mic_target()
-    playback_target = tts_engine.select_playback_target()
+        settings.save(language, cefr_level, native_language, mic_target, playback_target)
+        picks = {
+            "language": language,
+            "cefr_level": cefr_level,
+            "native_language": native_language,
+            "mic_target": mic_target,
+            "playback_target": playback_target,
+        }
 
-    settings.save(language, cefr_level, native_language, mic_target, playback_target)
-    return {
-        "language": language,
-        "cefr_level": cefr_level,
-        "native_language": native_language,
-        "mic_target": mic_target,
-        "playback_target": playback_target,
-    }
+    if cli_practice_mode is not None:
+        picks["practice_mode"] = cli_practice_mode
+        picks["custom_goal_file"] = cli_custom_goal_path.name if cli_custom_goal_path else ""
+    else:
+        print(_("What would you like to practice this session?"))
+        practice_mode = practice_modes.select_practice_mode()
+        custom_goal_file = ""
+        if practice_mode == "custom":
+            chosen = practice_modes.select_custom_goal_file()
+            if chosen is None:
+                practice_mode = practice_modes.DEFAULT_PRACTICE_MODE  # no files yet, fall back
+            else:
+                custom_goal_file = chosen.name
+        picks["practice_mode"] = practice_mode
+        picks["custom_goal_file"] = custom_goal_file
+
+    return picks
 
 
 def converse():
@@ -254,6 +283,13 @@ def converse():
 def main():
     global RAG_ENABLED, LANGUAGE_NAME, LANG_PROFILE, LANGUAGE, OCR_LANG
     args = sys.argv[1:]
+
+    if "--debug" in args:
+        logger.setLevel(logging.DEBUG)
+        llm_engine.logger.setLevel(logging.DEBUG)
+        stt_engine.logger.setLevel(logging.DEBUG)
+        tts_engine.logger.setLevel(logging.DEBUG)
+        rag_engine.logger.setLevel(logging.DEBUG)
 
     if "--version" in args:
         print(f"LangTeacher {version.__version__}")
@@ -297,8 +333,9 @@ def main():
 
     if "--help" in args:
         print(_("LangTeacher - voice-based language tutor"))
-        print(_("\nUsage: python3 main.py [--version] [--no-recap] [--whisper-model <model-name-or-path>] [--tts-engine <omnivoice|piper|auto>] [--tutor-host <ip-or-hostname>] [--tutor-port <port>] [--rag-host <ip-or-hostname>] [--rag-port <port>] [--ui-lang <language-code>]"))
+        print(_("\nUsage: python3 main.py [--version] [--debug] [--no-recap] [--whisper-model <model-name-or-path>] [--tts-engine <omnivoice|piper|auto>] [--tutor-host <ip-or-hostname>] [--tutor-port <port>] [--rag-host <ip-or-hostname>] [--rag-port <port>] [--practice-mode <mode>] [--custom-goal <filename>] [--ui-lang <language-code>]"))
         print(_("  --version        Print the installed version and exit"))
+        print(_("  --debug          Enable debug-level logging (e.g. the full tutor system prompt) to logs/*.log"))
         print(_("  --no-recap       Start with a clean slate, ignoring any previous session's recap"))
         print(_("  --whisper-model  Whisper model name or path to use for transcription (default: env WHISPER_MODEL or 'small'); pick according to platform/language, e.g. a smaller model on a Raspberry Pi or a language-specific fine-tune"))
         print(_("  --tts-engine     TTS backend to use: omnivoice (voice cloning/design), piper (lightweight, e.g. for a Raspberry Pi), or auto (default: env TTS_ENGINE or 'auto')"))
@@ -306,14 +343,59 @@ def main():
         print(_("  --tutor-port     llama.cpp server port for the tutor LLM (default: env LLAMACPP_PORT or 8080)"))
         print(_("  --rag-host       llama.cpp server host for the RAG embedding model (default: env EMBED_HOST or 127.0.0.1)"))
         print(_("  --rag-port       llama.cpp server port for the RAG embedding model (default: env EMBED_PORT or 8081)"))
+        print(_("  --practice-mode  Practice mode, skipping the interactive picker: {modes} (default: '{default_mode}')").format(
+            modes=", ".join(practice_modes.AVAILABLE_PRACTICE_MODES),
+            default_mode=practice_modes.DEFAULT_PRACTICE_MODE,
+        ))
+        print(_("  --custom-goal    Filename of a .md file in custom_goals/ to use as the session's goal; required when --practice-mode is 'custom' (and implies it if --practice-mode is omitted)"))
         print(_("  --ui-lang        Language for this CLI's own text, e.g. en/hu (default: env UI_LANGUAGE or system locale)"))
         return
+
+    # Validated here so an invalid choice fails fast with a clear message
+    # instead of silently falling back. If --practice-mode is given at all,
+    # _choose_settings() below skips its own interactive picker and uses
+    # these instead.
+    cli_practice_mode = None
+    if "--practice-mode" in args:
+        try:
+            cli_practice_mode = args[args.index("--practice-mode") + 1]
+            practice_modes.get_practice_mode(cli_practice_mode)
+        except IndexError:
+            print(_("Usage: --practice-mode <mode>"))
+            return
+        except ValueError as e:
+            print(str(e))
+            return
+
+    cli_custom_goal_name = None
+    if "--custom-goal" in args:
+        try:
+            cli_custom_goal_name = args[args.index("--custom-goal") + 1]
+        except IndexError:
+            print(_("Usage: --custom-goal <filename>"))
+            return
+
+    # --custom-goal only makes sense for the "custom" mode, so giving it
+    # alone (with no explicit --practice-mode) implies that mode instead of
+    # requiring both flags every time.
+    if cli_custom_goal_name is not None and cli_practice_mode is None:
+        cli_practice_mode = "custom"
+
+    cli_custom_goal_path = None
+    if cli_practice_mode == "custom":
+        if not cli_custom_goal_name:
+            print(_("Error: --practice-mode custom requires --custom-goal <filename>."))
+            return
+        cli_custom_goal_path = practice_modes.resolve_custom_goal_file(cli_custom_goal_name)
+        if cli_custom_goal_path is None:
+            print(_("Error: custom goal file '{name}' not found in custom_goals/.").format(name=cli_custom_goal_name))
+            return
 
     logger.info(f'LangTeacher {version.__version__} started.')
     signal.signal(signal.SIGINT, _shutdown_handler)
     signal.signal(signal.SIGTERM, _shutdown_handler)
 
-    picks = _choose_settings()
+    picks = _choose_settings(cli_practice_mode, cli_custom_goal_path)
 
     LANGUAGE_NAME = picks["language"]
     LANG_PROFILE = languages.get_language(LANGUAGE_NAME)
@@ -333,6 +415,11 @@ def main():
     tts_engine.set_piper_voice_target(LANG_PROFILE.get("piper_voice", ""))
     llm_engine.set_target_language(LANGUAGE_NAME.capitalize())
     llm_engine.set_tutor_name(LANG_PROFILE["tutor_name"])
+
+    llm_engine.set_practice_mode(picks["practice_mode"])
+    if picks["practice_mode"] == "custom":
+        goal_path = practice_modes.CUSTOM_GOALS_DIR / picks["custom_goal_file"]
+        llm_engine.set_custom_goal(practice_modes.read_custom_goal(goal_path))
 
     if not llm_engine.init_engine():
         print(_("Could not reach the tutor's language model at {host}:{port}.").format(

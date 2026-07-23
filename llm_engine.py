@@ -4,6 +4,7 @@ import gettext
 import requests
 import colors
 import languages
+import practice_modes
 import settings
 from pathlib import Path
 from typing import Optional
@@ -110,6 +111,14 @@ TUTOR_NAME = os.environ.get("TUTOR_NAME", _DEFAULT_PROFILE["tutor_name"])
 # full prior conversation in every request.
 LAST_SESSION_RECAP: Optional[str] = None
 
+# Which practice_modes.PRACTICE_MODES entry is active this session (see
+# practice_modes.select_practice_mode(), called fresh every run from
+# main.py -- never persisted to config.ini). CUSTOM_GOAL only matters when
+# PRACTICE_MODE is "custom", holding the text read from the student's chosen
+# custom_goals/*.md file.
+PRACTICE_MODE = os.environ.get("PRACTICE_MODE", practice_modes.DEFAULT_PRACTICE_MODE)
+CUSTOM_GOAL: Optional[str] = None
+
 def set_target_language(language):
     global TARGET_LANGUAGE
     TARGET_LANGUAGE = language
@@ -129,6 +138,14 @@ def set_tutor_name(name):
 def set_last_session_recap(recap: Optional[str]):
     global LAST_SESSION_RECAP
     LAST_SESSION_RECAP = recap
+
+def set_practice_mode(mode):
+    global PRACTICE_MODE
+    PRACTICE_MODE = mode
+
+def set_custom_goal(text: Optional[str]):
+    global CUSTOM_GOAL
+    CUSTOM_GOAL = text
 
 def build_system_prompt(context_chunks=None):
     """Assemble the system prompt from the current persona settings and, once
@@ -153,15 +170,26 @@ def build_system_prompt(context_chunks=None):
             f"you MUST first explain briefly in {NATIVE_LANGUAGE} (1-2 sentences), "
             f"then continue in {TARGET_LANGUAGE}."
         )
-        lines.append(
-            f"EXCEPTION to the rule above about defaulting to {TARGET_LANGUAGE}: when "
-            f"quizzing the student on vocabulary, the word or phrase being tested must be "
-            f"given in {NATIVE_LANGUAGE}, because the student's job is to produce the "
-            f"{TARGET_LANGUAGE} translation. For example, ask the equivalent of \"How do "
-            f"you say 'X' in {TARGET_LANGUAGE}?\" with X in {NATIVE_LANGUAGE} -- do NOT quote "
-            f"the {TARGET_LANGUAGE} word and ask what it is 'in {TARGET_LANGUAGE}', since "
-            f"that already states the answer and makes no sense."
-        )
+
+    # A custom goal file is free-form text a student wrote themselves (see
+    # custom_goals/), not a controlled template -- so its own {NATIVE_LANGUAGE}/
+    # {TARGET_LANGUAGE} placeholders are resolved with plain substring
+    # replacement rather than str.format(), which would raise on any other
+    # brace the student's markdown happens to contain (code samples, JSON,
+    # etc).
+    custom_goal = CUSTOM_GOAL
+    if custom_goal:
+        custom_goal = custom_goal.replace("{NATIVE_LANGUAGE}", NATIVE_LANGUAGE)
+        custom_goal = custom_goal.replace("{TARGET_LANGUAGE}", TARGET_LANGUAGE)
+
+    mode = practice_modes.get_practice_mode(PRACTICE_MODE)
+    for line in mode["prompt_lines"]:
+        lines.append(line.format(
+            native_language=NATIVE_LANGUAGE,
+            target_language=TARGET_LANGUAGE,
+            custom_goal=custom_goal,
+        ))
+
     if LAST_SESSION_RECAP:
         lines.append(
             "For continuity, here is a short recap of your last session with "
@@ -171,7 +199,9 @@ def build_system_prompt(context_chunks=None):
     if context_chunks:
         lines.append("Reference material from the course, use it only if relevant:")
         lines.extend(f"- {chunk}" for chunk in context_chunks)
-    return "\n".join(lines)
+    prompt = "\n".join(lines)
+    logger.debug(f"System prompt:\n{prompt}")
+    return prompt
 
 # ===== Conversation state =====
 
@@ -386,8 +416,11 @@ def summarize_session(transcript_text):
 
 
 def main():
-    global LLAMACPP_HOST, LLAMACPP_PORT, TARGET_LANGUAGE, TEACHER_LEVEL, TUTOR_NAME
+    global LLAMACPP_HOST, LLAMACPP_PORT, TARGET_LANGUAGE, NATIVE_LANGUAGE, TEACHER_LEVEL, TUTOR_NAME
     args = sys.argv[1:]
+
+    if "--debug" in args:
+        logger.setLevel(logging.DEBUG)
 
     if "--ui-lang" in args:
         try:
@@ -397,12 +430,18 @@ def main():
 
     if "--help" in args:
         print(_("LLM Engine - llama.cpp tutor client"))
-        print(_("\nUsage: python3 llm_engine.py [--host <ip-or-hostname>] [--port <port>] [--lang-target <language>] [--level <cefr-level>] [--ui-lang <language-code>]"))
+        print(_("\nUsage: python3 llm_engine.py [--host <ip-or-hostname>] [--port <port>] [--lang-target <language>] [--native-lang <language>] [--level <cefr-level>] [--practice-mode <mode>] [--custom-goal <filename>] [--debug] [--ui-lang <language-code>]"))
         print(_("  --host          llama.cpp server host (default: env LLAMACPP_HOST or 127.0.0.1)"))
         print(_("  --port          llama.cpp server port (default: env LLAMACPP_PORT or 8080)"))
-        print(_("  --lang-target   Target language the tutor teaches (default: env TARGET_LANGUAGE or German). Also"))
-        print(_("                  switches the tutor name to match, per languages.py, unless env TUTOR_NAME is set."))
+        print(_("  --lang-target   Target language the tutor teaches (default: env TARGET_LANGUAGE or German)"))
+        print(_("  --native-lang   Student's native language, for code-switch fallback and quiz/translation modes (default: env NATIVE_LANGUAGE or English)"))
         print(_("  --level         Student's CEFR level, e.g. A1/A2/B1/B2 (default: env TEACHER_LEVEL or B1)"))
+        print(_("  --practice-mode Practice mode: {modes} (default: '{default_mode}')").format(
+            modes=", ".join(practice_modes.AVAILABLE_PRACTICE_MODES),
+            default_mode=practice_modes.DEFAULT_PRACTICE_MODE,
+        ))
+        print(_("  --custom-goal   Filename of a .md file in custom_goals/ to use as the goal; required when --practice-mode is 'custom' (and implies it if --practice-mode is omitted)"))
+        print(_("  --debug         Enable debug-level logging (e.g. the full tutor system prompt) to logs/llm_engine.log"))
         print(_("  --ui-lang       Language for this CLI's own text, e.g. en/hu (default: env UI_LANGUAGE or system locale)"))
         sys.exit(0)
 
@@ -431,11 +470,58 @@ def main():
                     logger.warning(
                         f"No languages.py profile for '{TARGET_LANGUAGE}', keeping tutor name '{TUTOR_NAME}'."
                     )
+    if "--native-lang" in args:
+        try:
+            NATIVE_LANGUAGE = args[args.index("--native-lang") + 1]
+        except IndexError:
+            print(_("Usage: --native-lang <language>"))
     if "--level" in args:
         try:
             TEACHER_LEVEL = args[args.index("--level") + 1]
         except IndexError:
             print(_("Usage: --level <cefr-level>"))
+
+    # Validated fully before starting, so an invalid mode or a missing/
+    # unresolvable custom goal file fails fast with a clear message rather
+    # than only surfacing once the first prompt is built.
+    cli_practice_mode = None
+    if "--practice-mode" in args:
+        try:
+            cli_practice_mode = args[args.index("--practice-mode") + 1]
+            practice_modes.get_practice_mode(cli_practice_mode)
+        except IndexError:
+            print(_("Usage: --practice-mode <mode>"))
+            sys.exit(1)
+        except ValueError as e:
+            print(str(e))
+            sys.exit(1)
+
+    cli_custom_goal_name = None
+    if "--custom-goal" in args:
+        try:
+            cli_custom_goal_name = args[args.index("--custom-goal") + 1]
+        except IndexError:
+            print(_("Usage: --custom-goal <filename>"))
+            sys.exit(1)
+
+    # --custom-goal only makes sense for the "custom" mode, so giving it
+    # alone (with no explicit --practice-mode) implies that mode instead of
+    # requiring both flags every time.
+    if cli_custom_goal_name is not None and cli_practice_mode is None:
+        cli_practice_mode = "custom"
+
+    if cli_practice_mode is not None:
+        set_practice_mode(cli_practice_mode)
+
+    if cli_practice_mode == "custom":
+        if not cli_custom_goal_name:
+            print(_("Error: --practice-mode custom requires --custom-goal <filename>."))
+            sys.exit(1)
+        goal_path = practice_modes.resolve_custom_goal_file(cli_custom_goal_name)
+        if goal_path is None:
+            print(_("Error: custom goal file '{name}' not found in custom_goals/.").format(name=cli_custom_goal_name))
+            sys.exit(1)
+        set_custom_goal(practice_modes.read_custom_goal(goal_path))
 
     if not init_engine():
         print(_("Could not reach llama.cpp server at {url}").format(url=_base_url()))

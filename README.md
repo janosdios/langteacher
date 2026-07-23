@@ -34,6 +34,11 @@ keys, no per-message cost.
 - **CEFR-aware tutoring** — set your level (A1–C2); the tutor adjusts
   vocabulary and sentence complexity, and corrects at most one mistake per
   turn.
+- **Practice modes** — pick free conversation, role-play, a vocabulary quiz,
+  translation practice, or your own custom goal at the start of every
+  session (asked fresh every run, never saved between sessions). A custom
+  goal can be a whole drill you write yourself as a `.md` file in
+  `custom_goals/` (see [Practice modes](#practice-modes)).
 - **Voice cloning** — reference audio + transcript per tutor persona
   (`samples/`), or fall back to a generated (`--instruct`) voice (OmniVoice
   backend).
@@ -61,6 +66,7 @@ keys, no per-message cost.
 | [`main.py`](main.py) | Orchestrates a session: settings, the listen → think → speak loop, transcripts/recaps. |
 | [`stt_engine.py`](stt_engine.py) | Microphone capture (VAD or push-to-talk) and transcription via faster-whisper. |
 | [`llm_engine.py`](llm_engine.py) | Tutor persona, system prompt, streaming chat against a llama.cpp server, session summaries. |
+| [`practice_modes.py`](practice_modes.py) | Built-in practice-mode prompts (conversation, role-play, vocabulary quiz, translation practice) and the custom-goal-file picker (`custom_goals/`). |
 | [`tts_engine.py`](tts_engine.py) | Speech synthesis and playback, via OmniVoice (voice cloning/design) or Piper (lightweight, pretrained voices). |
 | [`rag_engine.py`](rag_engine.py) | PDF ingestion and retrieval for the optional course-material knowledge base. |
 | [`languages.py`](languages.py) | Per-language tutor profiles (STT code, OCR pack, persona, reference voice, Piper voice) and CEFR/native-language pickers. |
@@ -152,6 +158,42 @@ carry over between machines) and offered again next time. Hold Right Shift to ta
 (push-to-talk is the default; see `RECORD_METHOD` in `main.py` to switch to
 hands-free VAD).
 
+### Practice modes
+
+You're also asked what to practice at the start of every session — free
+conversation, role-play, a vocabulary quiz, translation practice, or a
+custom goal. This choice is asked fresh every single run and is never
+saved to `config.<hostname>.ini`.
+
+- **Free conversation** — the tutor opens by asking what topic you'd like
+  to talk about, then follows your lead.
+- **Role-play** — the tutor asks what scenario you'd like to act out (e.g.
+  buying something in a shop) and which of the two roles you want to play,
+  then stays in character for the rest of the session.
+- **Vocabulary quiz** — the tutor quizzes you word by word, asking in your
+  native language and expecting the target-language translation, checking
+  in only after 15–20 words rather than after every single one.
+- **Translation practice** — the tutor gives you a sentence in your native
+  language to translate, corrects your attempt, and moves on to the next
+  one, checking in only after 8–10 sentences.
+- **Custom goal** — write your own goal as a `.md` file in `custom_goals/`
+  (see `custom_goals/put_custom_goal_files_here.txt`); at session start
+  you'll get a numbered list of the 5 most recently modified files to pick
+  from. A goal file can be as short as one sentence or a full multi-
+  paragraph drill with its own instructions, and can reference
+  `{NATIVE_LANGUAGE}`/`{TARGET_LANGUAGE}`, substituted with your actual
+  session languages. This directory is gitignored, so pulling app updates
+  never touches your own goal files.
+
+For scripted or non-interactive runs, skip the picker with `--practice-mode
+<mode>` (one of `conversation`, `roleplay`, `vocab`, `translation`,
+`custom`; default `conversation`) and, for `custom`, `--custom-goal
+<filename>` naming a file in `custom_goals/` (with or without the `.md`
+extension). Passing `--custom-goal` alone, with no `--practice-mode`,
+implies `custom` mode. An invalid mode name, or `custom` mode without a
+goal file that actually exists, prints a clear error and exits instead of
+silently falling back to something else.
+
 ### Voice samples
 
 A default reference voice per language ships in `samples/`. To use your own,
@@ -200,6 +242,9 @@ python3 rag_engine.py query "some question" --language de --level A2
 Requires an embedding-model llama.cpp server (`EMBED_HOST`/`EMBED_PORT`,
 default `127.0.0.1:8081`). Set `RAG_ENABLED=false` to run without it — the
 tutor works fine with no knowledge base, it just skips retrieved context.
+Both subcommands also take `--debug` (debug-level logging to
+`logs/rag_engine.log`) and `--embed-host`/`--embed-port` to override the
+embedding server target for that one invocation.
 
 ## Configuration
 
@@ -214,13 +259,17 @@ same list from the CLI.
 
 | Flag | Purpose |
 |---|---|
+| `--version` | Print the installed version and exit |
+| `--debug` | Enable debug-level logging across all engines — including the full assembled tutor system prompt on every turn — to `logs/*.log` |
+| `--no-recap` | Start with a clean slate, ignoring any previous session's recap |
+| `--whisper-model <name-or-path>` | Whisper model for transcription (env `WHISPER_MODEL`, default `small`) |
+| `--tts-engine <omnivoice\|piper\|auto>` | TTS backend to use (env `TTS_ENGINE`, default `auto`, which picks `piper` on a detected Raspberry Pi) |
 | `--tutor-host <host>` | llama.cpp server host for the tutor LLM (env `LLAMACPP_HOST`, default `127.0.0.1`) |
 | `--tutor-port <port>` | llama.cpp server port for the tutor LLM (env `LLAMACPP_PORT`, default `8080`) |
 | `--rag-host <host>` | llama.cpp server host for the RAG embedding model (env `EMBED_HOST`, default `127.0.0.1`) |
 | `--rag-port <port>` | llama.cpp server port for the RAG embedding model (env `EMBED_PORT`, default `8081`) |
-| `--whisper-model <name-or-path>` | Whisper model for transcription (env `WHISPER_MODEL`, default `small`) |
-| `--tts-engine <omnivoice\|piper\|auto>` | TTS backend to use (env `TTS_ENGINE`, default `auto`, which picks `piper` on a detected Raspberry Pi) |
-| `--no-recap` | Start with a clean slate, ignoring any previous session's recap |
+| `--practice-mode <mode>` | Practice mode, skipping the interactive picker: `conversation`/`roleplay`/`vocab`/`translation`/`custom` (default `conversation`) — see [Practice modes](#practice-modes) |
+| `--custom-goal <filename>` | Filename of a `.md` file in `custom_goals/` to use as the session's goal; required when `--practice-mode` is `custom` (and implies it if `--practice-mode` is omitted) |
 | `--ui-lang <language-code>` | Language for this CLI's own text, e.g. `en`/`hu` (env `UI_LANGUAGE`, default: system locale) |
 
 Two settings are env-only, with no CLI flag on `main.py`: `RAG_ENABLED` (default `true`)
@@ -257,6 +306,7 @@ language/mic/playback device are picked interactively on first run (or reused fr
 | `--check-updates` | Check the HF Hub for a newer model revision instead of using the local cache offline (OmniVoice only) |
 | `--test` | Synthesize and play a short built-in phrase (quick sanity check) |
 | `--ui-lang <language-code>` | Language for this CLI's own text (env `UI_LANGUAGE`, default: system locale) |
+| `--debug` | Enable debug-level logging to `logs/tts_engine.log` |
 
 Also relevant, env-only: `OMNIVOICE_MODEL` (default `k2-fsa/OmniVoice`, an HF repo id or
 local path), `PIPER_VOICES_DIR` (default `piper_voices/`), and `PIPER_VOICE_TARGET`
@@ -269,11 +319,12 @@ local path), `PIPER_VOICES_DIR` (default `piper_voices/`), and `PIPER_VOICE_TARG
 | `--host <ip-or-hostname>` | llama.cpp server host (env `LLAMACPP_HOST`, default `127.0.0.1`) |
 | `--port <port>` | llama.cpp server port (env `LLAMACPP_PORT`, default `8080`) |
 | `--lang-target <language>` | Target language the tutor teaches (env `TARGET_LANGUAGE`, default `German`); also switches the tutor name to match, per `languages.py`, unless env `TUTOR_NAME` is set |
+| `--native-lang <language>` | Student's native language, for code-switch fallback and quiz/translation modes (env `NATIVE_LANGUAGE`, default `English`) |
 | `--level <cefr-level>` | Student's CEFR level, e.g. `A1`/`A2`/`B1`/`B2` (env `TEACHER_LEVEL`, default `B1`) |
+| `--practice-mode <mode>` | Practice mode: `conversation`/`roleplay`/`vocab`/`translation`/`custom` (default `conversation`) — see [Practice modes](#practice-modes) |
+| `--custom-goal <filename>` | Filename of a `.md` file in `custom_goals/` to use as the goal; required when `--practice-mode` is `custom` (and implies it if `--practice-mode` is omitted) |
+| `--debug` | Enable debug-level logging (e.g. the full tutor system prompt) to `logs/llm_engine.log` |
 | `--ui-lang <language-code>` | Language for this CLI's own text (env `UI_LANGUAGE`, default: system locale) |
-
-Note: the student's native language (used for code-switching help) has no flag here —
-it's only settable via the `NATIVE_LANGUAGE` env var, or `main.py`'s interactive picker.
 
 ## Project layout
 
@@ -282,6 +333,7 @@ books/           Your own course PDFs for RAG ingestion
 knowledge_base/  RAG's extracted chunks database
 samples/         Voice-cloning reference audio
 piper_voices/    Downloaded Piper .onnx/.onnx.json voice files
+custom_goals/    Your own custom practice-goal .md files, see Practice modes
 transcripts/     Your session transcripts + recap summaries
 logs/            Per-module log files
 config.<hostname>.ini   Your saved settings for this machine (one file per machine)

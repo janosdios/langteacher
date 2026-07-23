@@ -1,0 +1,25 @@
+Drop a .md file in this directory for each custom practice goal you want to
+choose from at the start of a session (see practice_modes.py). For example:
+
+    custom_goals/restaurant_vocab.md
+    custom_goals/job_interview.md
+
+The filename (underscores turned into spaces) becomes that goal's menu label,
+and the file's full text is given to the tutor as the session's goal, so just
+describe what you want to focus on in plain language, e.g.:
+
+    Practice ordering food at a restaurant: greeting the waiter, asking about
+    the menu, ordering, and asking for the bill.
+
+You can reference the current session's languages with {NATIVE_LANGUAGE} and
+{TARGET_LANGUAGE} -- they're substituted with whatever you picked at startup
+(e.g. English / German), so a goal file can stay language-agnostic:
+
+    Quiz me on restaurant vocabulary: ask the word in {NATIVE_LANGUAGE} and
+    have me answer in {TARGET_LANGUAGE}.
+
+When you pick "Custom goal" at the start of a session, LangTeacher lists the
+5 most recently modified .md files here for you to choose from by number.
+
+This directory is gitignored (see .gitignore) so pulling an app update never
+touches your own goal files.

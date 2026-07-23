@@ -4,6 +4,37 @@ All notable changes to this project are documented in this file.
 
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 
+## [1.1.0] - 2026-07-23
+
+### Added
+- Practice-mode selection at the start of every session: free conversation,
+  role-play, vocabulary quiz, translation practice, or a custom goal. In
+  role-play mode the tutor asks the student for a scenario and which of the
+  two roles they want to play, then stays in character for the rest of the
+  session. Built-in modes live in the new `practice_modes.py`; a custom goal
+  is read from a `.md` file the student drops in `custom_goals/` (see
+  `custom_goals/put_custom_goal_files_here.txt`), listing the 5 most
+  recently modified files to choose from. The choice is asked fresh on
+  every startup and is never saved to `config.<hostname>.ini`. Custom goal
+  files can reference `{NATIVE_LANGUAGE}`/`{TARGET_LANGUAGE}`, substituted
+  with the session's actual languages, and can be as short as one line or a
+  full multi-paragraph drill with its own instructions -- the goal's text is
+  given to the tutor on its own line rather than wrapped inline in quotes, so
+  longer, structured goals stay readable in the assembled prompt.
+- `--practice-mode <mode>` and `--custom-goal <filename>` flags for both
+  `main.py` and `llm_engine.py`'s standalone CLI, for scripted/non-interactive
+  runs. Passing `--practice-mode` skips `main.py`'s interactive picker
+  entirely; an invalid mode, or `--practice-mode custom` without a
+  `--custom-goal` naming an existing file in `custom_goals/`, prints a clear
+  error and exits immediately instead of falling back silently. Passing
+  `--custom-goal` alone, with no `--practice-mode`, implies `custom` mode.
+- `--native-lang <language>` flag for `llm_engine.py`'s standalone CLI,
+  mirroring `--lang-target`/`--level`.
+- `--debug` flag for `main.py`, enabling debug-level logging across all
+  engines (including the full assembled tutor system prompt on every turn),
+  and for `llm_engine.py`'s, `tts_engine.py`'s, and `rag_engine.py`'s own
+  standalone CLIs.
+
 ## [1.0.0] - 2026-07-22
 
 First stable release. LangTeacher is a voice-based language tutor that runs

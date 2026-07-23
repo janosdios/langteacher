@@ -1,14 +1,14 @@
 # SOME DESCRIPTIVE TITLE.
 # Copyright (C) YEAR THE PACKAGE'S COPYRIGHT HOLDER
-# This file is distributed under the same license as the PACKAGE package.
+# This file is distributed under the same license as the languages package.
 # FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
 #
 #, fuzzy
 msgid ""
 msgstr ""
-"Project-Id-Version: PACKAGE VERSION\n"
+"Project-Id-Version: languages\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-07-15 11:35+0200\n"
+"POT-Creation-Date: 2026-07-23 17:09+0200\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -17,39 +17,39 @@ msgstr ""
 "Content-Type: text/plain; charset=CHARSET\n"
 "Content-Transfer-Encoding: 8bit\n"
 
-#: languages.py:154
+#: languages.py:162
 msgid "Please select a language: "
 msgstr ""
 
-#: languages.py:156 languages.py:173 languages.py:193
+#: languages.py:164 languages.py:181 languages.py:201
 msgid "Error! Please enter a number!"
 msgstr ""
 
-#: languages.py:160
+#: languages.py:168
 msgid "Error! Please select a valid language!"
 msgstr ""
 
-#: languages.py:171
+#: languages.py:179
 msgid "Please select a CEFR level: "
 msgstr ""
 
-#: languages.py:177
+#: languages.py:185
 msgid "Error! Please select a valid level!"
 msgstr ""
 
-#: languages.py:191
+#: languages.py:199
 msgid "Please select your native language: "
 msgstr ""
 
-#: languages.py:199
+#: languages.py:207
 msgid "Error! Please select a valid option!"
 msgstr ""
 
-#: languages.py:214
+#: languages.py:222
 msgid "Please type your native language: "
 msgstr ""
 
-#: languages.py:218
+#: languages.py:226
 #, python-brace-format
 msgid "Error! '{typed}' isn't a recognized language name. Please try again."
 msgstr ""
