@@ -4,6 +4,24 @@ All notable changes to this project are documented in this file.
 
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 
+## [1.2.0] - 2026-07-24
+
+### Added
+- Input method and output method choice at the start of every session,
+  asked right after native language and saved to `config.<hostname>.ini`
+  alongside your other picks. Input can be voice (microphone + speech
+  recognition, the previous default) or text (typed at a prompt); output
+  can be voice (spoken aloud) or text (printed only). Choosing text for
+  either side skips its device-selection prompt and, at startup, its model
+  preload (Whisper for text input, the TTS voice model for text output),
+  so a text-only session starts faster and needs no microphone or speaker.
+
+### Changed
+- In role-play mode, the tutor now introduces herself by name and role
+  together once the scenario starts, so her fixed tutor persona and the
+  in-scene character (e.g. a waiter, a shopkeeper) stay linked from the
+  first line instead of only being connected implicitly.
+
 ## [1.1.0] - 2026-07-23
 
 ### Added

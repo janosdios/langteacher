@@ -20,6 +20,11 @@ keys, no per-message cost.
 
 - **Spoken conversation** — push-to-talk or hands-free (voice-activity
   detection) input, streamed spoken replies.
+- **Optional text mode** — pick text instead of voice for input, output, or
+  both, at the start of any session. Text input skips the microphone
+  entirely (type your turn instead); text output just prints the tutor's
+  replies instead of speaking them. Handy for a quiet room or a machine
+  with no mic/speaker.
 - **Multiple target languages** — German, French, Spanish, Hungarian,
   English out of the box, each with its own tutor persona and cloned voice
   (see [`languages.py`](languages.py)).
@@ -70,7 +75,7 @@ keys, no per-message cost.
 | [`tts_engine.py`](tts_engine.py) | Speech synthesis and playback, via OmniVoice (voice cloning/design) or Piper (lightweight, pretrained voices). |
 | [`rag_engine.py`](rag_engine.py) | PDF ingestion and retrieval for the optional course-material knowledge base. |
 | [`languages.py`](languages.py) | Per-language tutor profiles (STT code, OCR pack, persona, reference voice, Piper voice) and CEFR/native-language pickers. |
-| [`settings.py`](settings.py) | Persists your language/level/native-language/device picks between runs (`config.<hostname>.ini`, one file per machine). |
+| [`settings.py`](settings.py) | Persists your language/level/native-language/device/input-output-method picks between runs (`config.<hostname>.ini`, one file per machine). |
 
 Each engine module also works standalone for testing, e.g.
 `python3 stt_engine.py --test` or `python3 tts_engine.py --list-voices`
@@ -152,11 +157,16 @@ python3 main.py --tutor-host 192.168.1.10 --tutor-port 8080 --rag-host 192.168.1
 ```
 
 On first run you'll be prompted to pick your target language, CEFR level,
-native language, microphone, and playback device — these are saved to
-`config.<hostname>.ini` (one per machine, since mic/playback picks don't
-carry over between machines) and offered again next time. Hold Right Shift to talk
-(push-to-talk is the default; see `RECORD_METHOD` in `main.py` to switch to
-hands-free VAD).
+native language, input method (voice or text), and output method (voice or
+text) — these are saved to `config.<hostname>.ini` (one per machine, since
+mic/playback picks don't carry over between machines) and offered again
+next time. Picking voice for input or output also asks for a microphone or
+playback device, respectively; picking text skips that device prompt
+entirely, and startup skips loading the corresponding model (Whisper for
+text input, the TTS voice model for text output). With voice input, hold
+Right Shift to talk (push-to-talk is the default; see `RECORD_METHOD` in
+`main.py` to switch to hands-free VAD). With text input, just type your
+turn and press Enter.
 
 ### Practice modes
 
@@ -169,7 +179,8 @@ saved to `config.<hostname>.ini`.
   to talk about, then follows your lead.
 - **Role-play** — the tutor asks what scenario you'd like to act out (e.g.
   buying something in a shop) and which of the two roles you want to play,
-  then stays in character for the rest of the session.
+  introduces herself by name and role, then stays in character for the
+  rest of the session.
 - **Vocabulary quiz** — the tutor quizzes you word by word, asking in your
   native language and expecting the target-language translation, checking
   in only after 15–20 words rather than after every single one.
@@ -274,8 +285,8 @@ same list from the CLI.
 
 Two settings are env-only, with no CLI flag on `main.py`: `RAG_ENABLED` (default `true`)
 turns the RAG knowledge base on/off, and target language/CEFR level/native
-language/mic/playback device are picked interactively on first run (or reused from
-`config.<hostname>.ini`) rather than passed as flags.
+language/input method/output method/mic/playback device are picked interactively on
+first run (or reused from `config.<hostname>.ini`) rather than passed as flags.
 
 ### `stt_engine.py`
 
