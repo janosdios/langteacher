@@ -66,6 +66,10 @@ PRACTICE_MODES = {
             "exercise itself. Corrections still apply: weave them "
             "naturally into your in-character reply instead of stepping "
             "outside the scene to give them.",
+            "When you first take on your role, introduce yourself using "
+            "both your name and that role together, so the roleplay stays "
+            "connected to your tutor persona instead of dropping it "
+            "entirely.",
         ],
     },
     "vocab": {
