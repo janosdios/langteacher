@@ -58,7 +58,16 @@ RAG_ENABLED = os.environ.get("RAG_ENABLED", "true").lower() not in ("0", "false"
 # stt_engine.PTT_KEY) or "vad" (voice activity detection, starts recording as
 # soon as it hears speech). Kept as one constant so the startup message in
 # main() can describe the right way to talk instead of a generic one.
+# Only relevant when INPUT_METHOD == "voice".
 RECORD_METHOD = "key"
+
+# Whether converse() listens via microphone+Whisper ("voice") or a typed
+# input() prompt ("text"), and whether it speaks replies aloud via TTS
+# ("voice") or just prints them ("text"). Picked interactively at startup
+# (see _choose_settings()) and persisted in config.<hostname>.ini; these
+# start unset and are filled in before converse() ever runs.
+INPUT_METHOD = None
+OUTPUT_METHOD = None
 
 # Which language profile to teach (see languages.py for the available names
 # and what each bundles: STT/RAG code, OCR pack, tutor name, reference voice).
@@ -184,20 +193,64 @@ def _prompt_use_saved_settings(saved):
     print(_("  Language: {language}").format(language=saved['language'].capitalize()))
     print(_("  CEFR level: {level}").format(level=saved['cefr_level']))
     print(_("  Native language: {language}").format(language=saved['native_language']))
-    print(_("  Mic device: {name}").format(name=stt_engine.get_mic_target_name(saved['mic_target'])))
-    print(_("  Playback device: {name}").format(name=tts_engine.get_playback_target_name(saved['playback_target'])))
+    print(_("  Input method: {method}").format(method=saved['input_method']))
+    if saved['input_method'] == "voice":
+        print(_("  Mic device: {name}").format(name=stt_engine.get_mic_target_name(saved['mic_target'])))
+    print(_("  Output method: {method}").format(method=saved['output_method']))
+    if saved['output_method'] == "voice":
+        print(_("  Playback device: {name}").format(name=tts_engine.get_playback_target_name(saved['playback_target'])))
     answer = input(_("Keep these settings? [Y/n]: ")).strip().lower()
     return answer in ("", "y", "yes")
 
 
+def _select_input_method():
+    """Ask whether the student wants to speak or type each turn. Returns
+    "voice" or "text". Mirrors languages.select_teacher_level's numbered-menu
+    pattern; kept here (not in stt_engine.py) since it's a LangTeacher wizard
+    choice, not something the STT engine itself needs to know about."""
+    options = [("voice", _("Voice (microphone)")), ("text", _("Text (typing)"))]
+    for i, (_key, label) in enumerate(options):
+        print(f"{i}: {label}")
+
+    while True:
+        try:
+            selected = int(input(_('Please select an input method: ')))
+        except ValueError:
+            print(_("Error! Please enter a number!"))
+            continue
+        if 0 <= selected < len(options):
+            return options[selected][0]
+        print(_("Error! Please select a valid option!"))
+
+
+def _select_output_method():
+    """Ask whether the tutor's replies should be spoken aloud or just
+    printed. Returns "voice" or "text". Mirrors _select_input_method; kept
+    here (not in tts_engine.py) for the same reason."""
+    options = [("voice", _("Voice (spoken aloud)")), ("text", _("Text (printed only)"))]
+    for i, (_key, label) in enumerate(options):
+        print(f"{i}: {label}")
+
+    while True:
+        try:
+            selected = int(input(_('Please select an output method: ')))
+        except ValueError:
+            print(_("Error! Please enter a number!"))
+            continue
+        if 0 <= selected < len(options):
+            return options[selected][0]
+        print(_("Error! Please select a valid option!"))
+
+
 def _choose_settings(cli_practice_mode=None, cli_custom_goal_path=None):
     """Return this session's language/level/native-language/mic/playback/
-    practice-mode picks. The first five are either reused from config.ini (if
-    the user opts in) or gathered via the interactive pickers, saving the
-    outcome back to config.ini whenever the pickers are used, so next run has
-    something to offer. The practice mode (and, for "custom", the chosen goal
-    file) is never persisted -- it's picked fresh on every single run,
-    regardless of which branch above was taken.
+    input-method/output-method/practice-mode picks. All but the last two are
+    either reused from config.ini (if the user opts in) or gathered via the
+    interactive pickers, saving the outcome back to config.ini whenever the
+    pickers are used, so next run has something to offer. The practice mode
+    (and, for "custom", the chosen goal file) is never persisted -- it's
+    picked fresh on every single run, regardless of which branch above was
+    taken.
 
     If `cli_practice_mode` is given (from main()'s --practice-mode flag,
     already validated), it's used as-is and the interactive practice-mode
@@ -219,16 +272,24 @@ def _choose_settings(cli_practice_mode=None, cli_custom_goal_path=None):
         print(_("What's your native language?"))
         native_language = languages.select_native_language()
 
-        mic_target = stt_engine.select_mic_target()
-        playback_target = tts_engine.select_playback_target()
+        print(_("How would you like to talk to the tutor?"))
+        input_method = _select_input_method()
+        mic_target = stt_engine.select_mic_target() if input_method == "voice" else ""
 
-        settings.save(language, cefr_level, native_language, mic_target, playback_target)
+        print(_("How would you like the tutor to reply?"))
+        output_method = _select_output_method()
+        playback_target = tts_engine.select_playback_target() if output_method == "voice" else ""
+
+        settings.save(language, cefr_level, native_language, mic_target, playback_target,
+                      input_method, output_method)
         picks = {
             "language": language,
             "cefr_level": cefr_level,
             "native_language": native_language,
             "mic_target": mic_target,
             "playback_target": playback_target,
+            "input_method": input_method,
+            "output_method": output_method,
         }
 
     if cli_practice_mode is not None:
@@ -251,13 +312,20 @@ def _choose_settings(cli_practice_mode=None, cli_custom_goal_path=None):
 
 
 def converse():
-    """One listen -> think -> speak turn. Returns False if nothing was heard."""
-    user_text = record_speech(method=RECORD_METHOD)
-    if not user_text:
-        print(_("Didn't catch any speech in that recording.\n"))
-        return False
-
-    print(colors.user(_("Heard: \"{text}\"").format(text=user_text)))
+    """One listen/read -> think -> speak/print turn. Returns False if
+    nothing was heard/typed."""
+    if INPUT_METHOD == "voice":
+        user_text = record_speech(method=RECORD_METHOD)
+        if not user_text:
+            print(_("Didn't catch any speech in that recording.\n"))
+            return False
+        print(colors.user(_("Heard: \"{text}\"").format(text=user_text)))
+    else:
+        user_text = input(_("> ")).strip()
+        if not user_text:
+            print(_("Please type something.\n"))
+            return False
+        print(colors.user(_("You: \"{text}\"").format(text=user_text)))
     logger.info(f"User: {user_text}")
 
     context_chunks = []
@@ -268,7 +336,8 @@ def converse():
     for sentence in llm_engine.generate_reply_stream(user_text, context_chunks=context_chunks):
         print(colors.tutor(_("Tutor: {sentence}").format(sentence=sentence)))
         logger.info(f"Tutor: {sentence}")
-        tts_engine.speak_text(sentence)
+        if OUTPUT_METHOD == "voice":
+            tts_engine.speak_text(sentence)
         reply_sentences.append(sentence)
 
     if not reply_sentences:
@@ -281,7 +350,7 @@ def converse():
 
 # noinspection PyBroadException
 def main():
-    global RAG_ENABLED, LANGUAGE_NAME, LANG_PROFILE, LANGUAGE, OCR_LANG
+    global RAG_ENABLED, LANGUAGE_NAME, LANG_PROFILE, LANGUAGE, OCR_LANG, INPUT_METHOD, OUTPUT_METHOD
     args = sys.argv[1:]
 
     if "--debug" in args:
@@ -405,11 +474,16 @@ def main():
     llm_engine.set_teacher_level(picks["cefr_level"])
     llm_engine.set_native_language(picks["native_language"])
 
-    stt_engine.set_mic_target(int(picks["mic_target"]))
+    INPUT_METHOD = picks["input_method"]
+    OUTPUT_METHOD = picks["output_method"]
+
+    if INPUT_METHOD == "voice":
+        stt_engine.set_mic_target(int(picks["mic_target"]))
     stt_engine.set_lang_target(LANGUAGE)
     native_code = languages.native_language_code(picks["native_language"])
     stt_engine.set_native_lang_target(native_code or "")
-    tts_engine.set_playback_target(int(picks["playback_target"]))
+    if OUTPUT_METHOD == "voice":
+        tts_engine.set_playback_target(int(picks["playback_target"]))
     tts_engine.set_ref_audio_target(LANG_PROFILE["ref_audio_target"])
     tts_engine.set_ref_text_target(LANG_PROFILE["ref_text_target"])
     tts_engine.set_piper_voice_target(LANG_PROFILE.get("piper_voice", ""))
@@ -441,12 +515,16 @@ def main():
         print(_("RAG knowledge base unavailable, continuing without it (set RAG_ENABLED=false to silence this)."))
         RAG_ENABLED = False
 
-    print(_("Loading speech recognition model..."))
-    stt_engine.whisper_engine()
-    print(_("Loading voice model..."))
-    tts_engine.get_tts_model()
+    if INPUT_METHOD == "voice":
+        print(_("Loading speech recognition model..."))
+        stt_engine.whisper_engine()
+    if OUTPUT_METHOD == "voice":
+        print(_("Loading voice model..."))
+        tts_engine.get_tts_model()
 
-    if RECORD_METHOD == "key":
+    if INPUT_METHOD == "text":
+        print(_("\nLangTeacher ready. Type your message and press Enter (Ctrl+C to quit).\n"))
+    elif RECORD_METHOD == "key":
         print(_("\nLangTeacher ready. Hold {key} to talk (Ctrl+C to quit).\n").format(key=stt_engine.get_ptt_key_name()))
     else:
         print(_("\nLangTeacher ready. Speak whenever you like (Ctrl+C to quit).\n"))

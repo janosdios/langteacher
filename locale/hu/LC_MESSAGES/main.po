@@ -3,7 +3,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: main\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-07-23 11:42+0200\n"
+"POT-Creation-Date: 2026-07-24 10:51+0200\n"
 "PO-Revision-Date: 2026-07-15 11:44+0200\n"
 "Last-Translator: \n"
 "Language-Team: Hungarian\n"
@@ -12,7 +12,7 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 
-#: main.py:104
+#: main.py:113
 msgid ""
 "\n"
 "\n"
@@ -22,98 +22,161 @@ msgstr ""
 "\n"
 "A munkamenet befejezése..."
 
-#: main.py:183
+#: main.py:192
 msgid "Found settings from your last session:"
 msgstr "Az előző munkamenet beállításai megtalálhatók:"
 
-#: main.py:184
+#: main.py:193
 #, python-brace-format
 msgid "  Language: {language}"
 msgstr "  Nyelv: {language}"
 
-#: main.py:185
+#: main.py:194
 #, python-brace-format
 msgid "  CEFR level: {level}"
 msgstr "  CEFR szint: {level}"
 
-#: main.py:186
+#: main.py:195
 #, python-brace-format
 msgid "  Native language: {language}"
 msgstr "  Anyanyelv: {language}"
 
-#: main.py:187
+#: main.py:196
+#, python-brace-format
+msgid "  Input method: {method}"
+msgstr "  Bemeneti módszer: {method}"
+
+#: main.py:198
 #, python-brace-format
 msgid "  Mic device: {name}"
 msgstr "  Mikrofon: {name}"
 
-#: main.py:188
+#: main.py:199
+#, python-brace-format
+msgid "  Output method: {method}"
+msgstr "  Kimeneti módszer: {method}"
+
+#: main.py:201
 #, python-brace-format
 msgid "  Playback device: {name}"
 msgstr "  Lejátszó eszköz: {name}"
 
-#: main.py:189
+#: main.py:202
 msgid "Keep these settings? [Y/n]: "
 msgstr "Megtartod ezeket a beállításokat? [Y/n]: "
 
-#: main.py:213
+#: main.py:211
+msgid "Voice (microphone)"
+msgstr "Hang (mikrofon)"
+
+#: main.py:211
+msgid "Text (typing)"
+msgstr "Szöveg (gépelés)"
+
+#: main.py:217
+msgid "Please select an input method: "
+msgstr "Válassz egy bemeneti módszert: "
+
+#: main.py:219 main.py:238
+msgid "Error! Please enter a number!"
+msgstr "Hiba! Adj meg egy számot!"
+
+#: main.py:223 main.py:242
+msgid "Error! Please select a valid option!"
+msgstr "Hiba! Válassz egy érvényes lehetőséget!"
+
+#: main.py:230
+msgid "Voice (spoken aloud)"
+msgstr "Hang (felolvasva)"
+
+#: main.py:230
+msgid "Text (printed only)"
+msgstr "Szöveg (csak kiírva)"
+
+#: main.py:236
+msgid "Please select an output method: "
+msgstr "Válassz egy kimeneti módszert: "
+
+#: main.py:266
 msgid "Which language would you like to learn?"
 msgstr "Melyik nyelvet szeretnéd tanulni?"
 
-#: main.py:216
+#: main.py:269
 msgid "What's your CEFR level?"
 msgstr "Mi a CEFR szinted?"
 
-#: main.py:219
+#: main.py:272
 msgid "What's your native language?"
 msgstr "Mi az anyanyelved?"
 
-#: main.py:238
+#: main.py:275
+msgid "How would you like to talk to the tutor?"
+msgstr "Hogyan szeretnél beszélni a tanárral?"
+
+#: main.py:279
+msgid "How would you like the tutor to reply?"
+msgstr "Hogyan válaszoljon a tanár?"
+
+#: main.py:299
 msgid "What would you like to practice this session?"
 msgstr "Mit szeretnél gyakorolni ebben a munkamenetben?"
 
-#: main.py:257
+#: main.py:320
 msgid "Didn't catch any speech in that recording.\n"
 msgstr "Nem sikerült beszédet rögzíteni.\n"
 
-#: main.py:260
+#: main.py:322
 #, python-brace-format
 msgid "Heard: \"{text}\""
 msgstr "Hallottam: \"{text}\""
 
-#: main.py:269
+#: main.py:324
+msgid "> "
+msgstr "> "
+
+#: main.py:326
+msgid "Please type something.\n"
+msgstr "Kérlek, írj be valamit.\n"
+
+#: main.py:328
+#, python-brace-format
+msgid "You: \"{text}\""
+msgstr "Te: \"{text}\""
+
+#: main.py:337
 #, python-brace-format
 msgid "Tutor: {sentence}"
 msgstr "Tanár: {sentence}"
 
-#: main.py:275
+#: main.py:344
 msgid "(Tutor is unreachable, no reply generated)\n"
 msgstr "(A tanár nem elérhető, nem készült válasz)\n"
 
-#: main.py:302
+#: main.py:371
 msgid "Usage: --ui-lang <language-code>"
 msgstr "Használat: --ui-lang <nyelvkód>"
 
-#: main.py:308
+#: main.py:377
 msgid "Usage: --whisper-model <model-name-or-path>"
 msgstr "Használat: --whisper-model <modellnév-vagy-elérési-út>"
 
-#: main.py:314
+#: main.py:383
 msgid "Usage: --tts-engine <omnivoice|piper|auto>"
 msgstr "Használat: --tts-engine <omnivoice|piper|auto>"
 
-#: main.py:321
+#: main.py:390
 msgid "Usage: --tutor-host <ip-or-hostname> / --tutor-port <port>"
 msgstr "Használat: --tutor-host <ip-cím-vagy-hosztnév> / --tutor-port <port>"
 
-#: main.py:330
+#: main.py:399
 msgid "Usage: --rag-host <ip-or-hostname> / --rag-port <port>"
 msgstr "Használat: --rag-host <ip-cím-vagy-hosztnév> / --rag-port <port>"
 
-#: main.py:335
+#: main.py:404
 msgid "LangTeacher - voice-based language tutor"
 msgstr "LangTeacher - hangalapú nyelvtanár"
 
-#: main.py:336
+#: main.py:405
 msgid ""
 "\n"
 "Usage: python3 main.py [--version] [--debug] [--no-recap] [--whisper-model "
@@ -129,11 +192,11 @@ msgstr ""
 "vagy-hosztnév>] [--rag-port <port>] [--practice-mode <mód>] [--custom-goal "
 "<fájlnév>] [--ui-lang <nyelvkód>]"
 
-#: main.py:337
+#: main.py:406
 msgid "  --version        Print the installed version and exit"
 msgstr "  --version        Kiírja a telepített verziót, majd kilép"
 
-#: main.py:338
+#: main.py:407
 msgid ""
 "  --debug          Enable debug-level logging (e.g. the full tutor system "
 "prompt) to logs/*.log"
@@ -141,7 +204,7 @@ msgstr ""
 "  --debug          Debug szintű naplózás bekapcsolása (pl. a tanár teljes "
 "rendszer promptja) a logs/*.log fájlokba"
 
-#: main.py:339
+#: main.py:408
 msgid ""
 "  --no-recap       Start with a clean slate, ignoring any previous session's "
 "recap"
@@ -149,7 +212,7 @@ msgstr ""
 "  --no-recap       Tiszta lappal indulás, az előző munkamenet "
 "összefoglalójának figyelmen kívül hagyásával"
 
-#: main.py:340
+#: main.py:409
 msgid ""
 "  --whisper-model  Whisper model name or path to use for transcription "
 "(default: env WHISPER_MODEL or 'small'); pick according to platform/"
@@ -161,7 +224,7 @@ msgstr ""
 "'small'); a platformnak/nyelvnek megfelelően válaszd, pl. kisebb modell "
 "Raspberry Pi-n vagy nyelv-specifikus finomhangolt modell"
 
-#: main.py:341
+#: main.py:410
 msgid ""
 "  --tts-engine     TTS backend to use: omnivoice (voice cloning/design), "
 "piper (lightweight, e.g. for a Raspberry Pi), or auto (default: env "
@@ -171,7 +234,7 @@ msgstr ""
 "tervezés), piper (könnyűsúlyú, pl. Raspberry Pi-hez), vagy auto "
 "(alapértelmezett: TTS_ENGINE környezeti változó vagy 'auto')"
 
-#: main.py:342
+#: main.py:411
 msgid ""
 "  --tutor-host     llama.cpp server host for the tutor LLM (default: env "
 "LLAMACPP_HOST or 127.0.0.1)"
@@ -179,7 +242,7 @@ msgstr ""
 "  --tutor-host     A tanár nyelvi modelljét kiszolgáló llama.cpp szerver "
 "hosztja (alapértelmezett: LLAMACPP_HOST környezeti változó vagy 127.0.0.1)"
 
-#: main.py:343
+#: main.py:412
 msgid ""
 "  --tutor-port     llama.cpp server port for the tutor LLM (default: env "
 "LLAMACPP_PORT or 8080)"
@@ -187,7 +250,7 @@ msgstr ""
 "  --tutor-port     A tanár nyelvi modelljét kiszolgáló llama.cpp szerver "
 "portja (alapértelmezett: LLAMACPP_PORT környezeti változó vagy 8080)"
 
-#: main.py:344
+#: main.py:413
 msgid ""
 "  --rag-host       llama.cpp server host for the RAG embedding model "
 "(default: env EMBED_HOST or 127.0.0.1)"
@@ -196,7 +259,7 @@ msgstr ""
 "szerver hosztja (alapértelmezett: EMBED_HOST környezeti változó vagy "
 "127.0.0.1)"
 
-#: main.py:345
+#: main.py:414
 msgid ""
 "  --rag-port       llama.cpp server port for the RAG embedding model "
 "(default: env EMBED_PORT or 8081)"
@@ -204,7 +267,7 @@ msgstr ""
 "  --rag-port       A RAG beágyazási (embedding) modellt kiszolgáló llama.cpp "
 "szerver portja (alapértelmezett: EMBED_PORT környezeti változó vagy 8081)"
 
-#: main.py:346
+#: main.py:415
 #, python-brace-format
 msgid ""
 "  --practice-mode  Practice mode, skipping the interactive picker: {modes} "
@@ -213,7 +276,7 @@ msgstr ""
 "  --practice-mode  Gyakorlási mód, kihagyva az interaktív választót: {modes} "
 "(alapértelmezett: '{default_mode}')"
 
-#: main.py:350
+#: main.py:419
 msgid ""
 "  --custom-goal    Filename of a .md file in custom_goals/ to use as the "
 "session's goal; required when --practice-mode is 'custom' (and implies it if "
@@ -223,7 +286,7 @@ msgstr ""
 "céljaként; kötelező, ha a --practice-mode értéke 'custom' (és ezt a módot "
 "jelenti akkor is, ha a --practice-mode nincs megadva)"
 
-#: main.py:351
+#: main.py:420
 msgid ""
 "  --ui-lang        Language for this CLI's own text, e.g. en/hu (default: "
 "env UI_LANGUAGE or system locale)"
@@ -231,37 +294,37 @@ msgstr ""
 "  --ui-lang        Ennek a parancssori eszköznek a saját nyelve, pl. en/hu "
 "(alapértelmezett: UI_LANGUAGE környezeti változó vagy rendszernyelv)"
 
-#: main.py:364
+#: main.py:433
 msgid "Usage: --practice-mode <mode>"
 msgstr "Használat: --practice-mode <mód>"
 
-#: main.py:375
+#: main.py:444
 msgid "Usage: --custom-goal <filename>"
 msgstr "Használat: --custom-goal <fájlnév>"
 
-#: main.py:387
+#: main.py:456
 msgid "Error: --practice-mode custom requires --custom-goal <filename>."
 msgstr ""
 "Hiba: a --practice-mode custom értékéhez kötelező a --custom-goal <fájlnév>."
 
-#: main.py:391
+#: main.py:460
 #, python-brace-format
 msgid "Error: custom goal file '{name}' not found in custom_goals/."
 msgstr ""
 "Hiba: a(z) '{name}' egyéni célfájl nem található a custom_goals/ mappában."
 
-#: main.py:425
+#: main.py:499
 #, python-brace-format
 msgid "Could not reach the tutor's language model at {host}:{port}."
 msgstr "Nem sikerült elérni a tanár nyelvi modelljét itt: {host}:{port}."
 
-#: main.py:428
+#: main.py:502
 msgid "Check LLAMACPP_HOST/LLAMACPP_PORT and that llama-server is running."
 msgstr ""
 "Ellenőrizd az LLAMACPP_HOST/LLAMACPP_PORT beállításokat, és hogy fut-e a "
 "llama-server."
 
-#: main.py:441
+#: main.py:515
 msgid ""
 "RAG knowledge base unavailable, continuing without it (set RAG_ENABLED=false "
 "to silence this)."
@@ -269,15 +332,24 @@ msgstr ""
 "A RAG tudásbázis nem elérhető, folytatás nélküle (állítsd RAG_ENABLED=false "
 "értékre az üzenet elnémításához)."
 
-#: main.py:444
+#: main.py:519
 msgid "Loading speech recognition model..."
 msgstr "Beszédfelismerő modell betöltése..."
 
-#: main.py:446
+#: main.py:522
 msgid "Loading voice model..."
 msgstr "Hangmodell betöltése..."
 
-#: main.py:450
+#: main.py:526
+msgid ""
+"\n"
+"LangTeacher ready. Type your message and press Enter (Ctrl+C to quit).\n"
+msgstr ""
+"\n"
+"A LangTeacher készen áll. Írd be az üzeneted, majd nyomj Entert (Ctrl+C a "
+"kilépéshez).\n"
+
+#: main.py:528
 #, python-brace-format
 msgid ""
 "\n"
@@ -287,7 +359,7 @@ msgstr ""
 "A LangTeacher készen áll. Tartsd lenyomva a(z) {key} billentyűt a beszédhez "
 "(Ctrl+C a kilépéshez).\n"
 
-#: main.py:452
+#: main.py:530
 msgid ""
 "\n"
 "LangTeacher ready. Speak whenever you like (Ctrl+C to quit).\n"
@@ -295,7 +367,7 @@ msgstr ""
 "\n"
 "A LangTeacher készen áll. Beszélj, amikor szeretnél (Ctrl+C a kilépéshez).\n"
 
-#: main.py:458
+#: main.py:536
 msgid ""
 "\n"
 "Unexpected error, ending the session."
