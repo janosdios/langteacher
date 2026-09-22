@@ -25,6 +25,7 @@ _ENABLED = _supports_color()
 RESET = "\033[0m" if _ENABLED else ""
 _USER = "\033[1;34m" if _ENABLED else ""   # dark blue
 _TUTOR = "\033[33m" if _ENABLED else ""    # yellow
+_DEBUG = "\033[2m" if _ENABLED else ""     # dim
 
 
 def user(text):
@@ -33,3 +34,7 @@ def user(text):
 
 def tutor(text):
     return f"{_TUTOR}{text}{RESET}"
+
+
+def debug(text):
+    return f"{_DEBUG}{text}{RESET}"

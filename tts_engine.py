@@ -20,6 +20,7 @@ import tempfile
 import numpy as np
 import sounddevice as sd
 import soundfile as sf
+import colors
 import languages
 import settings
 
@@ -393,6 +394,7 @@ def _synthesize_omnivoice(model, text):
         guidance_scale=GUIDANCE_SCALE,
         denoise=DENOISE,
     )
+    start = time.perf_counter()
     audios = model.generate(
         text=text,
         language=language,
@@ -401,6 +403,10 @@ def _synthesize_omnivoice(model, text):
         speed=SPEED,
         generation_config=gen_config,
     )
+    elapsed = time.perf_counter() - start
+    logger.debug(f"Omnivoice generated {len(text)} chars in {elapsed:.2f}s")
+    if logger.isEnabledFor(logging.DEBUG):
+        print(colors.debug(f"[omnivoice] generated in {elapsed:.2f}s ({len(text)} chars)"))
     return audios[0], model.sampling_rate
 
 def _synthesize_piper(model, text):
